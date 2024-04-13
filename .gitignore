@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+*.log
+*.pot
+*.pyc
+.envs
+media/
