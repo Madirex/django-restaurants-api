@@ -14,5 +14,5 @@ class User(AbstractUser):
     phone = models.CharField(null=True, max_length=15)
     city = models.CharField(null=True, max_length=255)
     country = models.CharField(null=True, max_length=255)
-    is_recruiter = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     #TODO: DO

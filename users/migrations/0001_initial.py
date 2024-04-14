@@ -6,6 +6,9 @@ import django.contrib.auth.validators
 from django.db import migrations, models
 import django.utils.timezone
 
+def create_admin_user(apps, schema_editor):
+    User = apps.get_model('users', 'User')
+    User.objects.create_superuser(username='admin', email='contact@madirex.com', password='User123-', is_admin=True, is_staff=True, is_superuser=True)
 
 class Migration(migrations.Migration):
 
@@ -36,7 +39,7 @@ class Migration(migrations.Migration):
                 ('phone', models.CharField(max_length=15, null=True)),
                 ('city', models.CharField(max_length=255, null=True)),
                 ('country', models.CharField(max_length=255, null=True)),
-                ('is_recruiter', models.BooleanField(default=False)),
+                ('is_admin', models.BooleanField(default=False)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),
             ],
@@ -49,4 +52,5 @@ class Migration(migrations.Migration):
                 ('objects', django.contrib.auth.models.UserManager()),
             ],
         ),
+        migrations.RunPython(create_admin_user),
     ]
