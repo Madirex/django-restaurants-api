@@ -5,11 +5,13 @@ from users.models import User
 from ckeditor.fields import RichTextField
 
 class Category(models.Model):
-    # TODO: ENLAZAR CON PLATO (DISH) -- user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['name']]
 
     def __str__(self):
         """Return name"""

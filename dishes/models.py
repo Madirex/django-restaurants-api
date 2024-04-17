@@ -1,7 +1,8 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 from django.core.validators import MinValueValidator
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
+from categories.models import Category
 
 class Dish(models.Model):
     class DishType(models.TextChoices):
@@ -28,3 +29,11 @@ class Dish(models.Model):
     def __str__(self):
         """Return name, description, price, dish_type, ingredients, calories, image, preparation_time, category, restaurants"""
         return f'{self.name}, {self.description}, {self.price}, {self.dish_type}, {self.ingredients}, {self.calories}, {self.image}, {self.preparation_time}, {self.category}, {self.restaurants}'
+
+    def save(self, *args, **kwargs):
+            # Al guardar el objeto Dish, busca la categoría por nombre y la asigna al campo de nombre de categoría
+            if self.category:
+                category = Category.objects.filter(name=self.category).first()
+                if category:
+                    self.category = category
+            super().save(*args, **kwargs)

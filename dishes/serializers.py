@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Dish
+from categories.models import Category
 from django.core.validators import MinValueValidator, FileExtensionValidator
 import uuid
 
@@ -41,6 +42,14 @@ class DishSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
+    def validate_category(self, value):
+        try:
+            # Verificar si la categoría existe en la base de datos
+            Category.objects.get(name=value)
+        except Category.DoesNotExist:
+            raise serializers.ValidationError("La categoría especificada no existe.")
+        return value
+
     def validate_restaurants(self, value):
         for item in value:
             try:
@@ -50,7 +59,10 @@ class DishSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
-        return Dish.objects.create(**validated_data)
+        category = validated_data.pop('category')
+        category, _ = Category.objects.get_or_create(name=category)
+        dish = Dish.objects.create(category=category, **validated_data)
+        return dish
 
 
 class DishImageUpdateSerializer(serializers.Serializer):

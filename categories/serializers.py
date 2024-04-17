@@ -19,11 +19,17 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         )
 
 class CategorySerializer(serializers.Serializer):
-    # TODO: ENLAZAR CON PLATO (DISH) -- user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     name = serializers.CharField(max_length=250)
     is_active = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+
+    def validate_name(self, value):
+        value = value.lower()
+        if Category.objects.filter(name__iexact=value).exists():
+            raise serializers.ValidationError("Ya existe una categoría con este nombre.")
+
+        return value
 
     def create(self, data):
         exp = Category.objects.create(**data)
