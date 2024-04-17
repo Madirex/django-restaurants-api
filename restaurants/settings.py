@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'categories',
     'cartcodes',
+    'dishes',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +126,8 @@ USE_L10N = True
 USE_TZ = True
 
 ATOMIC_REQUESTS = True
+
+APPEND_SLASH=True
 
 
 # Static files (CSS, JavaScript, Images)

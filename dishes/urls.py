@@ -1,10 +1,10 @@
-"""CartCode URLs."""
+"""Dish URLs."""
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from cartcodes import views
+from dishes import views
 
 router = DefaultRouter()
-router.register('cartcodes', views.CartCodeViewSet, basename='cartcodes')
+router.register('dishes', views.DishViewSet, basename='dishes')
 
 urlpatterns = [
     path('', include(router.urls))
