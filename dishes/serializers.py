@@ -64,7 +64,6 @@ class DishSerializer(serializers.Serializer):
         dish = Dish.objects.create(category=category, **validated_data)
         return dish
 
-
 class DishImageUpdateSerializer(serializers.Serializer):
     image = serializers.ImageField(
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
