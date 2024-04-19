@@ -14,8 +14,8 @@ class RestaurantDishLinkViewSet(mixins.CreateModelMixin,
     serializer_class = RestaurantDishLinkSerializer
     queryset = RestaurantDishLink.objects.all()
     permission_classes_by_action = {
-        'list': [IsAuthenticated, IsStandardUser],
-        'retrieve': [IsAuthenticated, IsStandardUser],
+        'list': [IsAuthenticated, IsAdminUser],
+        'retrieve': [IsAuthenticated, IsAdminUser],
         'create': [IsAuthenticated, IsAdminUser],
         'update': [IsAuthenticated, IsAdminUser],
         'partial_update': [IsAuthenticated, IsAdminUser],
