@@ -9,7 +9,7 @@ class RestaurantDishLinkSerializer(serializers.ModelSerializer):
         model = RestaurantDishLink
         fields = (
             'id',
-            #'restaurant',
+            'restaurant',
             'dish',
             'stock',
         )

@@ -21,14 +21,13 @@ class Dish(models.Model):
     image = models.ImageField(null=True, upload_to='dishes')
     preparation_time = models.PositiveSmallIntegerField(validators=[MinValueValidator(0)])
     category = models.CharField(max_length=255)
-    restaurants = JSONField(default=list)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        """Return name, description, price, dish_type, ingredients, calories, image, preparation_time, category, restaurants"""
-        return f'{self.name}, {self.description}, {self.price}, {self.dish_type}, {self.ingredients}, {self.calories}, {self.image}, {self.preparation_time}, {self.category}, {self.restaurants}'
+        """Return name, description, price, dish_type, ingredients, calories, image, preparation_time, category"""
+        return f'{self.name}, {self.description}, {self.price}, {self.dish_type}, {self.ingredients}, {self.calories}, {self.image}, {self.preparation_time}, {self.category}'
 
     def save(self, *args, **kwargs):
             # Al guardar el objeto Dish, busca la categoría por nombre y la asigna al campo de nombre de categoría

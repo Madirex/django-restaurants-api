@@ -22,7 +22,6 @@ class DishModelSerializer(serializers.ModelSerializer):
             'image',
             'preparation_time',
             'category',
-            'restaurants',
             'is_active',
             'created_at',
             'updated_at',
@@ -37,7 +36,6 @@ class DishSerializer(serializers.Serializer):
     calories = serializers.FloatField(validators=[MinValueValidator(0)])
     preparation_time = serializers.IntegerField(validators=[MinValueValidator(0)])
     category = serializers.CharField(max_length=255)
-    restaurants = serializers.JSONField(default=list)
     is_active = serializers.BooleanField(default=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
@@ -48,14 +46,6 @@ class DishSerializer(serializers.Serializer):
             Category.objects.get(name=value)
         except Category.DoesNotExist:
             raise serializers.ValidationError("La categoría especificada no existe.")
-        return value
-
-    def validate_restaurants(self, value):
-        for item in value:
-            try:
-                uuid.UUID(str(item))
-            except ValueError:
-                raise serializers.ValidationError(f"{item} no es un UUID válido")
         return value
 
     def create(self, validated_data):
