@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from uuid import uuid4
 from datetime import datetime
+from restaurants.models import Restaurant
 
 class Table(models.Model):
     x_position = models.PositiveIntegerField(validators=[MinValueValidator(1)])
@@ -9,6 +10,7 @@ class Table(models.Model):
     min_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     max_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     assigned_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
+    assigned_restaurant = models.ForeignKey(Restaurant,on_delete=models.PROTECT,related_name='tables')
     # TODO: assignedOrder = models.UUIDField(default=uuid4)
     reserved = models.BooleanField(default=False)
     reserved_at = models.DateTimeField(null=True, blank=True)
