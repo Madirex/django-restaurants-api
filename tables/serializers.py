@@ -14,8 +14,8 @@ class TableModelSerializer(serializers.ModelSerializer):
             'y_position',
             'min_chairs',
             'max_chairs',
+            'assigned_chairs',
             #TODO: 'assignedOrder',
-            #TODO: 'assignedChairs',
             'reserved',
             'reserved_at',
             'created_at',
@@ -28,12 +28,21 @@ class TableSerializer(serializers.Serializer):
     y_position = serializers.IntegerField(validators=[MinValueValidator(1)])
     min_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     max_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
+    assigned_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
 
     def validate(self, data):
-        """Asegurarse de que min_chairs sea menor o igual a max_chairs."""
+        """Asegurarse de que min_chairs sea menor o igual a max_chairs y que assigned_chairs sea un valor posible."""
         if data['min_chairs'] > data['max_chairs']:
             raise serializers.ValidationError(
                 "El mínimo de sillas debe ser menor o igual al máximo de sillas."
+            )
+        if data['assigned_chairs'] < data['min_chairs']:
+            raise serializers.ValidationError(
+                "El número de sillas asignadas no puede ser menor al mínimo de sillas."
+            )
+        if data['assigned_chairs'] > data['max_chairs']:
+            raise serializers.ValidationError(
+                "El número de sillas asignadas no puede ser mayor al máximo de sillas."
             )
         return data
 
