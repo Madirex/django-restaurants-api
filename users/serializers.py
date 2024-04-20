@@ -47,12 +47,6 @@ class UserSignUpSerializer(serializers.Serializer):
         required=False
     )
 
-    extract = serializers.CharField(max_length=1000, required=False)
-
-    city = serializers.CharField(max_length=250, required=False)
-
-    country = serializers.CharField(max_length=250, required=False)
-
     phone_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
         message="Debes introducir un número con el siguiente formato: +999999999. El límite son de 15 dígitos."
