@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'cartcodes',
     'dishes',
     'restaurant_dish_link',
-    'restaurants'
+    'restaurants',
+    'tables'
 ]
 
 MIDDLEWARE = [
