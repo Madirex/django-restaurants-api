@@ -18,6 +18,9 @@ class Table(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('x_position', 'y_position')
+
     def __str__(self):
         """Return basic info about the table"""
         return f'Table at ({self.x_position}, {self.y_position}), Min Chairs: {self.min_chairs}, Max Chairs: {self.max_chairs}, Assigned Chairs: {self.assigned_chairs} Reserved: {self.reserved}'

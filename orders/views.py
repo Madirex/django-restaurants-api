@@ -21,7 +21,7 @@ class OrderViewSet(
 
     def get_permissions(self):
         """Define permisos de administrador."""
-            permission_classes = [IsAuthenticated, IsAdminUser]
+        permission_classes = [IsAuthenticated, IsAdminUser]
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
