@@ -33,7 +33,7 @@ class TableSerializer(serializers.Serializer):
     max_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
-    assigned_order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+    assigned_order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)  # Opcional
 
     def validate(self, data):
         """Asegurarse de que min_chairs sea menor o igual a max_chairs y que assigned_chairs sea un valor posible."""

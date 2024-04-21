@@ -12,7 +12,7 @@ class Table(models.Model):
     max_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     assigned_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = models.ForeignKey(Restaurant,on_delete=models.PROTECT,related_name='tables')
-    assigned_order = models.ForeignKey(Order,on_delete=models.PROTECT,related_name='reserved_tables')
+    assigned_order = models.ForeignKey(Order,on_delete=models.PROTECT,related_name='reserved_tables', null=True, blank=True)
     reserved = models.BooleanField(default=False)
     reserved_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
