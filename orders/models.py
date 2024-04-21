@@ -2,7 +2,6 @@ import uuid
 from django.db import models
 from django.core.validators import MinValueValidator
 from restaurants.models import Restaurant
-from tables.models import Table
 from users.models import User
 from cartcodes.models import CartCode
 
