@@ -20,10 +20,7 @@ class OrderViewSet(
     queryset = Order.objects.all()
 
     def get_permissions(self):
-        """Define permisos por acción."""
-        if self.action in ["list", "retrieve"]:
-            permission_classes = [IsAuthenticated, IsStandardUser]
-        else:
+        """Define permisos de administrador."""
             permission_classes = [IsAuthenticated, IsAdminUser]
         return [permission() for permission in permission_classes]
 
