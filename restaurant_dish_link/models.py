@@ -12,14 +12,3 @@ class RestaurantDishLink(models.Model):
     def __str__(self):
         """Return a string representation"""
         return f'{self.dish}'
-
-        #TODO: instrucciones para usar las relaciones desde Dish o Restaurant:
-        ## Supongamos que tenemos un plato específico
-        #dish = Dish.objects.get(pk=1)
-        #
-        ## Accede a los restaurantes vinculados a este plato
-        #linked_restaurants = dish.linked_restaurants.all()
-        #
-        ## Itera sobre los restaurantes vinculados
-        #for restaurant in linked_restaurants:
-        #    print(restaurant)

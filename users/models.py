@@ -8,11 +8,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-
     #TODO: orders
     #TODO: address
     modified = models.DateTimeField(auto_now=True)
     photo = models.ImageField(null=True, upload_to='users')
     phone = models.CharField(null=True, max_length=15)
     is_admin = models.BooleanField(default=False)
-    #TODO: DO

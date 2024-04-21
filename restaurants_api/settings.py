@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'dishes',
     'restaurant_dish_link',
     'restaurants',
-    'tables'
+    'tables',
+    'order_lines',
+    'orders'
 ]
 
 MIDDLEWARE = [
@@ -142,9 +144,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-#TODO: SECRET_KEY = os.environ['SECRET_KEY']
-#TODO: DEBUG = os.environ['DEBUG']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

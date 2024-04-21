@@ -8,8 +8,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'pk',
             'name',
             'address',
-            #TODO: 'menu',
-            #TODO: 'tables',
             'active',
             'created_at',
             'updated_at',

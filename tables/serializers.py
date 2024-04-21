@@ -3,6 +3,7 @@ from .models import Table
 from django.core.validators import MinValueValidator
 from datetime import datetime
 from restaurants.models import Restaurant
+from orders.models import Order
 
 class TableModelSerializer(serializers.ModelSerializer):
     """Serializer para el modelo de Mesa"""
@@ -17,7 +18,7 @@ class TableModelSerializer(serializers.ModelSerializer):
             'max_chairs',
             'assigned_chairs',
             'assigned_restaurant',
-            #TODO: 'assignedOrder',
+            'assigned_order',
             'reserved',
             'reserved_at',
             'created_at',
@@ -32,6 +33,7 @@ class TableSerializer(serializers.Serializer):
     max_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
+    assigned_order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
 
     def validate(self, data):
         """Asegurarse de que min_chairs sea menor o igual a max_chairs y que assigned_chairs sea un valor posible."""

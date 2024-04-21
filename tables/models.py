@@ -11,7 +11,7 @@ class Table(models.Model):
     max_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     assigned_chairs = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = models.ForeignKey(Restaurant,on_delete=models.PROTECT,related_name='tables')
-    # TODO: assignedOrder = models.UUIDField(default=uuid4)
+    assigned_order = models.ForeignKey(Restaurant,on_delete=models.PROTECT,related_name='reserved_tables')
     reserved = models.BooleanField(default=False)
     reserved_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
