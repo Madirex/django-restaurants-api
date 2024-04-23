@@ -39,13 +39,15 @@ class UserViewSet(viewsets.GenericViewSet):
         data = UserModelSerializer(user).data
         return Response(data, status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=['put'], permission_classes=[IsAuthenticated])
-    def update_address(self, request):
-        """Permitir al usuario autenticado actualizar su dirección."""
+    @action(detail=False, methods=['patch'], permission_classes=[IsAuthenticated])
+    def modify(self, request):
+        """Update user data."""
         user = request.user
-        serializer = UserAddressUpdateSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
+
+        if not request.data:
+            return Response({"detail": "No data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = UserModelSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
