@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Restaurant
 from .serializers import RestaurantSerializer
 from users.permissions import IsStandardUser, IsAdminUser
+from rest_framework.decorators import action
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()

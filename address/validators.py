@@ -31,8 +31,8 @@ def validate_address(address):
     for field, max_length in max_lengths.items():
         if field in address:
             if not isinstance(address[field], str):
-                raise ValueError(f"El campo '{field}' debe ser una cadena de texto.")
+                raise ValidationError(f"El campo '{field}' debe ser una cadena de texto.")
             if len(address[field]) > max_length:
-                raise ValueError(f"El campo '{field}' no debe exceder {max_length} caracteres.")
+                raise ValidationError(f"El campo '{field}' no debe exceder {max_length} caracteres.")
 
     return address

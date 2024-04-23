@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
 from django.apps import AppConfig
 from django.db.models import JSONField
-from users.validators import validate_address
+from address.validators import validate_address
 
 class User(AbstractUser):
     email = models.EmailField('email address', unique=True)

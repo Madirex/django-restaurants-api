@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from users.models import User
-from users.validators import validate_address
+from address.validators import validate_address
 from rest_framework.exceptions import ValidationError
 
 class UserMeModelSerializer(serializers.ModelSerializer):
