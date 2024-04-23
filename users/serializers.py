@@ -4,6 +4,20 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from users.models import User
+from users.validators import validate_address
+from rest_framework.exceptions import ValidationError
+
+class UserMeModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'address',
+        )
 
 class UserModelSerializer(serializers.ModelSerializer):
 
@@ -60,23 +74,35 @@ class UserSignUpSerializer(serializers.Serializer):
     last_name = serializers.CharField(min_length=2, max_length=100)
 
     def validate(self, data):
-            passwd = data['password']
-            passwd_conf = data['password_confirmation']
-            if passwd != passwd_conf:
-                raise serializers.ValidationError("Las contraseñas no coinciden")
-            password_validation.validate_password(passwd)
+        passwd = data['password']
+        passwd_conf = data['password_confirmation']
+        if passwd != passwd_conf:
+            raise serializers.ValidationError("Las contraseñas no coinciden")
+        password_validation.validate_password(passwd)
 
-            image = None
-            if 'photo' in data:
-                image = data['photo']
+        image = None
+        if 'photo' in data:
+            image = data['photo']
 
-            if image:
-                if image.size > (512 * 1024):
-                    raise serializers.ValidationError(f"La imagen es demasiado grande, el peso máximo permitido es de 512KB y el tamaño enviado es de {round(image.size / 1024)}KB")
+        if image:
+            if image.size > (512 * 1024):
+                raise serializers.ValidationError(f"La imagen es demasiado grande, el peso máximo permitido es de 512KB y el tamaño enviado es de {round(image.size / 1024)}KB")
 
-            return data
+        return data
 
     def create(self, data):
         data.pop('password_confirmation')
         user = User.objects.create_user(**data)
         return user
+
+class UserAddressUpdateSerializer(serializers.ModelSerializer):
+    address = serializers.JSONField(required=False, allow_null=True)
+    class Meta:
+        model = User
+        fields = ['address']
+
+    def validate_address(self, value):
+        if not isinstance(value, dict):
+            raise ValidationError("La dirección debe ser un objeto JSON.")
+        validate_address(value)
+        return value
