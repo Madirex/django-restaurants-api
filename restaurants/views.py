@@ -13,7 +13,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
-            permission_classes = [IsAuthenticated, IsStandardUser]  # Los usuarios estándar pueden ver la lista y los detalles del restaurante
+            permission_classes = []  # Los usuarios estándar pueden ver la lista y los detalles del restaurante
         else:
             permission_classes = [IsAuthenticated, IsAdminUser]  # Solo los administradores pueden realizar operaciones CRUD en los restaurantes
         return [permission() for permission in permission_classes]
