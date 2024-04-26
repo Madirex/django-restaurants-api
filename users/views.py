@@ -5,6 +5,7 @@ from users.serializers import UserLoginSerializer, UserSignUpSerializer, UserMod
 from users.models import User
 from rest_framework.permissions import IsAuthenticated
 from users.serializers import UserAddressUpdateSerializer
+from orders.serializers import OrderSerializer
 
 class UserViewSet(viewsets.GenericViewSet):
 
@@ -16,6 +17,18 @@ class UserViewSet(viewsets.GenericViewSet):
         """Devolver los datos del usuario autenticado."""
         user = request.user
         serializer = UserMeModelSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def orders(self, request):
+        """Devolver los pedidos del usuario autenticado."""
+        user = request.user
+        orders = user.orders.all()
+        page = self.paginate_queryset(orders)
+        if page is not None:
+            serializer = OrderSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -48,6 +61,16 @@ class UserViewSet(viewsets.GenericViewSet):
             return Response({"detail": "No data provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserModelSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['put'], permission_classes=[IsAuthenticated])
+    def update_address(self, request):
+        """Update user address."""
+        user = request.user
+
+        serializer = UserAddressUpdateSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
