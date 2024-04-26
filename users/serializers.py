@@ -17,6 +17,8 @@ class UserMeModelSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'address',
+            'phone',
+            'photo'
         )
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -28,6 +30,8 @@ class UserModelSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
+            'phone',
+            'photo'
         )
 
 class UserLoginSerializer(serializers.Serializer):
