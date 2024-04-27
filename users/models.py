@@ -10,6 +10,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+    is_confirmed = models.BooleanField(default=False)
+    confirmation_token = models.CharField(max_length=255, blank=True, null=True)
+
     modified = models.DateTimeField(auto_now=True)
     photo = models.ImageField(null=True, upload_to='users')
     phone = models.CharField(null=True, max_length=15)

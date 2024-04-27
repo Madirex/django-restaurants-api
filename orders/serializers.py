@@ -55,3 +55,49 @@ class OrderSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class UserMakeOrderSerializer(serializers.ModelSerializer):
+# TODO: El usuario podrá insertar un Order que tendrá diferentes order_lines
+    """Serializer para crear un Order."""
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Order
+        fields = (
+            'restaurant',
+            'total',
+            'total_dishes',
+            'cart_code',
+        )
+
+    # TODO: Esto solo lo podría ejecutar el usuario autenticado
+    def validate(self, data):
+        """Validar que el usuario no tenga un order pendiente."""
+        user = data['user'] # TODO: esto debería de ser el usuario autentificado ¿¿¿ user = User.objects.get(pk=user.pk)
+        restaurant = data['restaurant']
+        cart_code = data['cart_code']
+
+        # TODO: lo de "Pendiente" refactorizar, porque ahora está hardcodeado
+        if not Restaurant.objects.filter(pk=restaurant.pk).exists():
+            raise serializers.ValidationError("El restaurante no existe.")
+
+        # TODO: agregar comprobación de TIENDA actualmente abierta (en horario válido y con mesa disponible)
+
+        if Order.objects.filter(user=user, restaurant=restaurant, status='Pendiente').exists():
+            raise serializers.ValidationError("Ya tienes un pedido pendiente en este restaurante.")
+
+        #TODO: FIX if not CartCode.objects.filter(code=cart_code, is_active=True, available_uses>=1).exists():
+        #    raise serializers.ValidationError("El código de carrito no es válido o ya ha expirado.")
+
+            #TODO: agregar 'restaurant_name',
+            #TODO: agregar 'user_name',
+            #TODO: agregar 'total',
+            #TODO: agregar 'total_dishes',
+            #TODO: agregar 'status',
+        #TODO: Faltaría insertarlo
+
+        return data
+
+    def create(self, validated_data):
+        """Crear un nuevo Order."""
+        return Order.objects.create(**validated_data)

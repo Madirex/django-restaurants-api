@@ -5,3 +5,4 @@ djangorestframework==3.12.2
 psycopg2==2.9.9
 django-ckeditor==5.9.0
 Pillow==7.1.2
+itsdangerous==2.1.0

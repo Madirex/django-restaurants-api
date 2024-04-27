@@ -15,6 +15,8 @@ class Table(models.Model):
     assigned_order = models.ForeignKey(Order,on_delete=models.PROTECT,related_name='reserved_tables', null=True, blank=True)
     reserved = models.BooleanField(default=False)
     reserved_at = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    finish_reserve_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

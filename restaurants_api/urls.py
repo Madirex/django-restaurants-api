@@ -29,4 +29,6 @@ urlpatterns = [
     path('', include(('tables.urls', 'tables'), namespace='tables')),
     path('', include(('orders.urls', 'orders'), namespace='orders')),
     path('', include(('order_lines.urls', 'order_lines'), namespace='order_lines')),
+    path('', include(('calendars.urls', 'calendars'), namespace='calendars')),
+    path('', include(('schedules.urls', 'schedules'), namespace='schedules')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -21,6 +21,8 @@ class TableModelSerializer(serializers.ModelSerializer):
             'assigned_order',
             'reserved',
             'reserved_at',
+            'is_active',
+            'finish_reserve_at',
             'created_at',
             'updated_at',
         )
@@ -34,6 +36,7 @@ class TableSerializer(serializers.Serializer):
     assigned_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
     assigned_order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)  # Opcional
+    is_active = serializers.BooleanField(default=True)
 
     def validate(self, data):
         """Asegurarse de que min_chairs sea menor o igual a max_chairs y que assigned_chairs sea un valor posible."""

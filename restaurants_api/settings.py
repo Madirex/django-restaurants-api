@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'restaurants',
     'tables',
     'order_lines',
-    'orders'
+    'orders',
+    'calendars',
+    'schedules'
 ]
 
 MIDDLEWARE = [
@@ -161,3 +163,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
 }
+
+# Configuración del servidor SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_HOST_USER']
