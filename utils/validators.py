@@ -36,3 +36,9 @@ def validate_address(address):
                 raise ValidationError(f"El campo '{field}' no debe exceder {max_length} caracteres.")
 
     return address
+
+def validate_half_hour(time_list):
+    for t in time_list:
+        # Asegurarse de que el minuto sea 0 o 30
+        if t.minute not in [0, 30]:
+            raise ValidationError("Las horas de apertura deben ser cada media hora (por ejemplo, 8:00, 8:30, 9:00, etc.).")

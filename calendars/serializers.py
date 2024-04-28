@@ -8,12 +8,12 @@ class ScheduleModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ('pk', 'day', 'opened_hours', 'closed_hours')
+        fields = ('pk', 'day', 'opened_hours')
 
 class CalendarModelSerializer(serializers.ModelSerializer):
     """Calendar Model Serializer"""
 
-    schedules = ScheduleModelSerializer(many=True, read_only=True)  # Incluir los Schedules asociados
+    #customs_schedules = ScheduleModelSerializer(many=True, read_only=True)  # Incluir los Schedules asociados
 
     class Meta:
         model = Calendar
@@ -26,15 +26,30 @@ class CalendarModelSerializer(serializers.ModelSerializer):
             'summer_start_date',
             'winter_start_date',
             'closed_days',
-            'schedules',  # Incluir el campo schedules
+            'customs_schedules',  # Incluir el campo schedules
         )
 
 class CalendarSerializer(serializers.Serializer):
     """Serializer para crear/actualizar Calendarios"""
 
-    normal_week_schedule = serializers.DateField()
-    summer_week_schedule = serializers.DateField(required=False)
-    winter_week_schedule = serializers.DateField(required=False)
+    normal_week_schedule = serializers.PrimaryKeyRelatedField(
+        queryset=Schedule.objects.all(),
+        required=False,
+        help_text="Schedule para semanas normales"
+    )
+
+    summer_week_schedule = serializers.PrimaryKeyRelatedField(
+        queryset=Schedule.objects.all(),
+        required=False,
+        help_text="Schedule para semanas de verano"
+    )
+
+    winter_week_schedule = serializers.PrimaryKeyRelatedField(
+        queryset=Schedule.objects.all(),
+        required=False,
+        help_text="Schedule para semanas de invierno"
+    )
+
     normal_start_date = serializers.DateField()
     summer_start_date = serializers.DateField(required=False)
     winter_start_date = serializers.DateField(required=False)

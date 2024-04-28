@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Restaurant
-from address.validators import validate_address
+from utils.validators import validate_address
 from rest_framework.exceptions import ValidationError
 from tables.serializers import TableSerializer
 

@@ -4,9 +4,13 @@ from django.core.validators import MinValueValidator
 from datetime import datetime
 from restaurants.models import Restaurant
 from orders.models import Order
+from reserves.serializers import ReserveSerializer
 
 class TableModelSerializer(serializers.ModelSerializer):
     """Serializer para el modelo de Mesa"""
+
+    #ver datos reserves con Serializer de Reserve
+    reserves = ReserveSerializer(many=True, read_only=True)
 
     class Meta:
         model = Table
@@ -17,6 +21,7 @@ class TableModelSerializer(serializers.ModelSerializer):
             'min_chairs',
             'max_chairs',
             'assigned_restaurant',
+            'reserves',
             'is_active',
             'created_at',
             'updated_at',

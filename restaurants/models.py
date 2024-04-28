@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from django.db.models import JSONField
-from address.validators import validate_address
+from utils.validators import validate_address
 from calendars.models import Calendar
 
 class Restaurant(models.Model):

@@ -5,6 +5,11 @@ from .models import Restaurant
 from .serializers import RestaurantSerializer
 from users.permissions import IsStandardUser, IsAdminUser
 from rest_framework.decorators import action
+from tables.models import Table
+from tables.serializers import TableSerializer
+from reserves.models import Reserve
+from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
@@ -12,8 +17,8 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminUser]  # Solo los administradores pueden realizar operaciones CRUD en los restaurantes
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
-            permission_classes = []  # Los usuarios estándar pueden ver la lista y los detalles del restaurante
+        if self.action in ['list', 'retrieve', 'open_hours']:
+            permission_classes = []
         else:
             permission_classes = [IsAuthenticated, IsAdminUser]  # Solo los administradores pueden realizar operaciones CRUD en los restaurantes
         return [permission() for permission in permission_classes]
