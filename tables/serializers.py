@@ -16,13 +16,8 @@ class TableModelSerializer(serializers.ModelSerializer):
             'y_position',
             'min_chairs',
             'max_chairs',
-            'assigned_chairs',
             'assigned_restaurant',
-            'assigned_order',
-            'reserved',
-            'reserved_at',
             'is_active',
-            'finish_reserve_at',
             'created_at',
             'updated_at',
         )
@@ -33,24 +28,14 @@ class TableSerializer(serializers.Serializer):
     y_position = serializers.IntegerField(validators=[MinValueValidator(1)])
     min_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     max_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
-    assigned_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
-    assigned_order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=False)  # Opcional
     is_active = serializers.BooleanField(default=True)
 
     def validate(self, data):
-        """Asegurarse de que min_chairs sea menor o igual a max_chairs y que assigned_chairs sea un valor posible."""
+        """Asegurarse de que min_chairs sea menor o igual a max_chairs."""
         if data['min_chairs'] > data['max_chairs']:
             raise serializers.ValidationError(
                 "El mínimo de sillas debe ser menor o igual al máximo de sillas."
-            )
-        if data['assigned_chairs'] < data['min_chairs']:
-            raise serializers.ValidationError(
-                "El número de sillas asignadas no puede ser menor al mínimo de sillas."
-            )
-        if data['assigned_chairs'] > data['max_chairs']:
-            raise serializers.ValidationError(
-                "El número de sillas asignadas no puede ser mayor al máximo de sillas."
             )
         """Asegurarse de que no exista una mesa en la misma posición."""
         # Validación para posiciones únicas

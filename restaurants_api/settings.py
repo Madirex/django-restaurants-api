@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'order_lines',
     'orders',
     'calendars',
-    'schedules'
+    'schedules',
+    'reserves'
 ]
 
 MIDDLEWARE = [

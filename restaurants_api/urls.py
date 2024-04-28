@@ -31,4 +31,5 @@ urlpatterns = [
     path('', include(('order_lines.urls', 'order_lines'), namespace='order_lines')),
     path('', include(('calendars.urls', 'calendars'), namespace='calendars')),
     path('', include(('schedules.urls', 'schedules'), namespace='schedules')),
+    path('', include(('reserves.urls', 'reserves'), namespace='reserves')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

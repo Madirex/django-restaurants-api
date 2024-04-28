@@ -2,9 +2,12 @@ from rest_framework import serializers
 from .models import Restaurant
 from address.validators import validate_address
 from rest_framework.exceptions import ValidationError
+from tables.serializers import TableSerializer
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    tables = TableSerializer(many=True, read_only=True)
     address = serializers.JSONField(required=False, allow_null=True)
+    # agregar lista de tables
     class Meta:
         model = Restaurant
         fields = (
@@ -12,6 +15,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'name',
             'address',
             'calendar',
+            'tables',
             'active',
             'created_at',
             'updated_at',
