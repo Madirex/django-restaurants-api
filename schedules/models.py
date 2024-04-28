@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date, time
-from utils.validators import validate_half_hour
+from utils.validators import validate_half_hour, validate_unique_schedule_day
 
 class Schedule(models.Model):
     """Modelo para horarios"""
 
-    day = models.DateField(help_text="Día del horario")
+    day = models.DateField(help_text="Día del horario", null=True, blank=True)
 
     opened_hours = ArrayField(
         models.TimeField(),
@@ -22,6 +22,15 @@ class Schedule(models.Model):
         related_name='customs_schedules',
         help_text="El calendario asociado"
     )
+
+    def clean(self):
+        if self.calendar:
+            schedule_queryset = self.calendar.customs_schedules
+            validate_unique_schedule_day(schedule_queryset, self.day, self.id)
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Schedule para {self.day}"
