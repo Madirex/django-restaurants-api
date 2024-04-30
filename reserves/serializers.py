@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Reserve
+from datetime import timedelta
+from orders.models import OrderStatus
 
 class ReserveSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,5 +34,26 @@ class ReserveSerializer(serializers.ModelSerializer):
 
         if start_reserve and finish_reserve and start_reserve >= finish_reserve:
             raise serializers.ValidationError("La fecha/hora de inicio debe ser anterior a la fecha/hora de finalización.")
+
+        # Obtener el ID de la mesa a la que se asignará la reserva
+        table_id = data.get('table')  # ID de la mesa
+
+        if not table_id:
+            raise serializers.ValidationError("Debe asignarse una mesa a la reserva.")
+
+        # Verificar superposiciones excluyendo reservas canceladas
+        overlapping_reservations = Reserve.objects.filter(
+            table=table_id,
+            start_reserve__lt=finish_reserve - timedelta(minutes=5),
+            finish_reserve__gt=start_reserve,
+        ).exclude(assigned_order__status=OrderStatus.CANCELLED)  # Excluir reservas canceladas
+
+        # Si estamos actualizando, excluir la reserva actual
+        instance = getattr(self, 'instance', None)
+        if instance:
+            overlapping_reservations = overlapping_reservations.exclude(id=instance.id)
+
+        if overlapping_reservations.exists():
+            raise serializers.ValidationError("Ya existe una reserva que ocupa este rango horario para la mesa especificada.")
 
         return data
