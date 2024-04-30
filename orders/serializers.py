@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order
+from .models import Order, OrderStatus
 from restaurants.models import Restaurant
 from users.models import User
 from cartcodes.models import CartCode
@@ -28,6 +28,14 @@ class OrderSerializer(serializers.ModelSerializer):
         )
 
         read_only_fields = ('total', 'total_dishes')
+
+    def validate_status(self, value):
+    # Validar el campo 'status' para asegurar que es uno de los valores permitidos
+        if value not in [choice.value for choice in OrderStatus]:
+            raise serializers.ValidationError({
+                "status": f"Estado no válido: {value}. Debe ser uno de los valores permitidos: {', '.join([choice.value for choice in OrderStatus])}."
+            })
+        return value
 
     def validate_total(self, value):
         """Validar que el total sea al menos 0."""
@@ -77,13 +85,12 @@ class UserMakeOrderSerializer(serializers.ModelSerializer):
         restaurant = data['restaurant']
         cart_code = data['cart_code']
 
-        # TODO: lo de "Pendiente" refactorizar, porque ahora está hardcodeado
         if not Restaurant.objects.filter(pk=restaurant.pk).exists():
             raise serializers.ValidationError("El restaurante no existe.")
 
         # TODO: agregar comprobación de TIENDA actualmente abierta (en horario válido y con mesa disponible)
 
-        if Order.objects.filter(user=user, restaurant=restaurant, status='Pendiente').exists():
+        if Order.objects.filter(user=user, restaurant=restaurant, status=OrderStatus.PENDING).exists():
             raise serializers.ValidationError("Ya tienes un pedido pendiente en este restaurante.")
 
         #TODO: FIX if not CartCode.objects.filter(code=cart_code, is_active=True, available_uses>=1).exists():

@@ -11,6 +11,9 @@ from reserves.models import Reserve
 from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from schedules.models import Schedule
+from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours
+from orders.models import OrderStatus
+
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
@@ -45,6 +48,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='schedules')
     def get_schedules(self, request, pk=None):
+    # TODO: Refactorizar esta función y poner con otras funciones como se pusieron abajo
         restaurant = self.get_object()
         calendar = restaurant.calendar
 
@@ -117,5 +121,81 @@ class RestaurantViewSet(viewsets.ModelViewSet):
                     })
 
             current_date += timedelta(days=1)
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'], url_path='available-tables')
+    def get_available_tables(self, request, pk=None):
+        restaurant = self.get_object()
+        calendar = restaurant.calendar
+
+        if not calendar:
+            return Response(
+                {"error": "Este restaurante no tiene un calendario asignado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        day_str = request.query_params.get("day")
+        if not day_str:
+            return Response(
+                {"error": "Debe proporcionar el parámetro 'day' en formato 'YYYY-MM-DD'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            day = datetime.strptime(day_str, "%Y-%m-%d").date()
+        except ValueError:
+            return Response(
+                {"error": "Formato de fecha inválido. Use 'YYYY-MM-DD'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Obtener el Schedule para el día especificado
+        schedule = get_schedule_for_day(calendar, day)
+
+        if not schedule:
+            return Response(
+                {"error": f"No se encontró un Schedule para el día {day_str}."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        opening_hours = schedule.opened_hours
+
+        # Obtener todas las mesas del restaurante
+        tables = restaurant.tables.all()
+
+        # Filtrar las reservas para el día especificado, excluyendo las canceladas
+        reservations_day = Reserve.objects.filter(
+            start_reserve__date=day,
+            table__in=tables
+        ).exclude(assigned_order__status=OrderStatus.CANCELLED)
+
+        # Calcular las horas ocupadas por mesa de forma individual
+        occupied_hours_per_table = {
+            table.id: get_occupied_hours(
+                reservations_day.filter(table=table),
+                opening_hours
+            ) for table in tables
+        }
+
+        # Calcular las horas disponibles para cada mesa
+        response_data = []
+        for table in tables:
+            available_hours = get_available_hours(
+                opening_hours,
+                occupied_hours_per_table[table.id]
+            )
+
+            # Crear la estructura para cada mesa con detalles y horas disponibles
+            table_info = {
+                "pk": table.pk,
+                "x_position": table.x_position,
+                "y_position": table.y_position,
+                "min_chairs": table.min_chairs,
+                "max_chairs": table.max_chairs,
+                "is_active": table.is_active,
+                "available_hours": available_hours
+            }
+            response_data.append(table_info)
 
         return Response(response_data, status=status.HTTP_200_OK)
