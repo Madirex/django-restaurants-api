@@ -8,6 +8,27 @@ class ReserveSerializer(serializers.ModelSerializer):
         model = Reserve
         fields = ['id', 'start_reserve', 'finish_reserve', 'assigned_order', 'assigned_chairs', 'table']
 
+    def validate_overlapping(self, data):
+        """Validar que no haya superposiciones para la misma mesa"""
+        start_reserve = data.get('start_reserve')
+        finish_reserve = data.get('finish_reserve')
+        table = data.get('table')
+
+        overlapping_reservations = Reserve.objects.filter(
+            table=table,
+            start_reserve__lt=finish_reserve - timedelta(minutes=5),
+            finish_reserve__gt=start_reserve,
+        ).exclude(assigned_order__status='cancelled')  # Excluir reservas canceladas
+
+        # Si estamos actualizando, excluir la reserva actual
+        if self.instance:
+            overlapping_reservations = overlapping_reservations.exclude(id=self.instance.id)
+
+        if overlapping_reservations.exists():
+            raise serializers.ValidationError("Ya existe una reserva que se superpone para esta mesa y rango de tiempo.")
+
+        return data
+
     def validate_assigned_chairs(self, value):
         """Validar que el número de sillas asignadas esté entre min_chairs y max_chairs de la mesa asociada"""
         table = self.initial_data.get('table')

@@ -3,11 +3,17 @@ from .models import Order, OrderStatus
 from restaurants.models import Restaurant
 from users.models import User
 from cartcodes.models import CartCode
+from order_lines.serializers import OrderLineSerializer
+from reserves.serializers import ReserveSerializer
+from reserves.models import Reserve
+from datetime import timedelta
 
 class OrderSerializer(serializers.ModelSerializer):
     """Serializer para el modelo Order."""
     restaurant_name = serializers.CharField(source='restaurant.name', read_only=True)
     user_name = serializers.CharField(source='user.username', read_only=True)
+    order_lines = OrderLineSerializer(many=True, read_only=True)
+    reserves = ReserveSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
@@ -22,6 +28,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'is_deleted',
             'status',
             'cart_code',
+            'order_lines',
+            'reserves',
             'created_at',
             'updated_at',
             'finished_at',
@@ -49,8 +57,15 @@ class OrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("El total de dishes debe ser al menos 0.")
         return value
 
+    def validate_restaurant(self, value):
+        """Validar que el restaurante exista."""
+        if not Restaurant.objects.filter(name=value).exists():
+            raise serializers.ValidationError("El restaurante especificado no existe.")
+        return value
+
     def create(self, validated_data):
         """Crear un nuevo Order."""
+        validated_data['status'] = OrderStatus.PENDING
         return Order.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
@@ -63,48 +78,3 @@ class OrderSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-class UserMakeOrderSerializer(serializers.ModelSerializer):
-# TODO: El usuario podrá insertar un Order que tendrá diferentes order_lines
-    """Serializer para crear un Order."""
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Order
-        fields = (
-            'restaurant',
-            'total',
-            'total_dishes',
-            'cart_code',
-        )
-
-    # TODO: Esto solo lo podría ejecutar el usuario autenticado
-    def validate(self, data):
-        """Validar que el usuario no tenga un order pendiente."""
-        user = data['user'] # TODO: esto debería de ser el usuario autentificado ¿¿¿ user = User.objects.get(pk=user.pk)
-        restaurant = data['restaurant']
-        cart_code = data['cart_code']
-
-        if not Restaurant.objects.filter(pk=restaurant.pk).exists():
-            raise serializers.ValidationError("El restaurante no existe.")
-
-        # TODO: agregar comprobación de TIENDA actualmente abierta (en horario válido y con mesa disponible)
-
-        if Order.objects.filter(user=user, restaurant=restaurant, status=OrderStatus.PENDING).exists():
-            raise serializers.ValidationError("Ya tienes un pedido pendiente en este restaurante.")
-
-        #TODO: FIX if not CartCode.objects.filter(code=cart_code, is_active=True, available_uses>=1).exists():
-        #    raise serializers.ValidationError("El código de carrito no es válido o ya ha expirado.")
-
-            #TODO: agregar 'restaurant_name',
-            #TODO: agregar 'user_name',
-            #TODO: agregar 'total',
-            #TODO: agregar 'total_dishes',
-            #TODO: agregar 'status',
-        #TODO: Faltaría insertarlo
-
-        return data
-
-    def create(self, validated_data):
-        """Crear un nuevo Order."""
-        return Order.objects.create(**validated_data)
