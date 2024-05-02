@@ -44,6 +44,33 @@ class UserViewSet(viewsets.GenericViewSet):
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def get_order(self, request):
+        """Devolver un pedido específico del usuario autenticado."""
+        order_id = request.query_params.get('order_id', None)
+
+        if not order_id:
+            return Response({"error": "El pedido (order_id) no se ha proporcionado."}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = Order.objects.filter(id=order_id, user=request.user).first()
+
+        if not order:
+            return Response({"error": "Pedido no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # Acción para obtener un pedido por ID
+    #NO HACER CON PK PORQUE DA ERROR - CUIDADO CON TypeError: UserViewSet.order() got an unexpected keyword argument 'pk'
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
+    def order(self, request, pk=None):
+        """Devolver un pedido específico del usuario autenticado."""
+        order = Order.objects.filter(id=pk, user=request.user).first()
+        if not order:
+            return Response({"error": "Pedido no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'])
     def login(self, request):
         """User login."""
@@ -189,10 +216,6 @@ class UserViewSet(viewsets.GenericViewSet):
         if start_reserve < datetime.now():
             return Response({"error": "La fecha y hora de inicio de la reserva no puede ser menor a la fecha y hora actual"}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
         # Convertir a datetime
         start_reserve = datetime.strptime(reserve_data["start_reserve"], "%Y-%m-%d %H:%M:%S")
         finish_reserve = datetime.strptime(reserve_data["finish_reserve"], "%Y-%m-%d %H:%M:%S")
@@ -228,7 +251,7 @@ class UserViewSet(viewsets.GenericViewSet):
         # Calcular las horas disponibles para esa mesa
         available_hours = get_available_hours(opening_hours, occupied_hours)
 
-        # TODO: Verificar si el intervalo de reserva está dentro de las horas disponibles
+        # Verificar si el intervalo de reserva está dentro de las horas disponibles
         # Calcular las horas disponibles para cada mesa
         response_data = []
         occupied_hours_per_table = {
@@ -290,6 +313,30 @@ class UserViewSet(viewsets.GenericViewSet):
 
 
         return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def cancel_order(self, request, pk=None):
+        # Obten el pedido por ID y verifica que pertenece al usuario autenticado
+        order = Order.objects.filter(id=pk, user=request.user).first()
+
+        # Si no se encuentra
+        if not order:
+            return Response({"error": "Pedido no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Verificar si ya está cancelado
+        if order.status == OrderStatus.CANCELLED:
+            return Response({"error": "El pedido ya está cancelado."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Cambiar el estado a CANCELLED
+        order.status = OrderStatus.CANCELLED
+        order.save()
+
+        # Si hay cupón asociado, aumentar sus usos disponibles
+        if order.cart_code:
+            order.cart_code.available_uses += 1
+            order.cart_code.save()
+
+        return Response({"message": "Pedido cancelado exitosamente."}, status=status.HTTP_200_OK)
 
     #TODO: arreglar e implementar email (problema dependencia con versión actual DJango)
     #@action(detail=False, methods=['get'], url_path='confirm/(?P<token>.+)')
