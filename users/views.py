@@ -16,6 +16,9 @@ from decimal import Decimal
 from reserves.serializers import ReserveSerializer
 from cartcodes.models import CartCode
 from datetime import datetime
+from restaurants.models import Restaurant
+from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours
+from reserves.models import Reserve
 
 class UserViewSet(viewsets.GenericViewSet):
 
@@ -187,6 +190,64 @@ class UserViewSet(viewsets.GenericViewSet):
             return Response({"error": "La fecha y hora de inicio de la reserva no puede ser menor a la fecha y hora actual"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+
+        # Convertir a datetime
+        start_reserve = datetime.strptime(reserve_data["start_reserve"], "%Y-%m-%d %H:%M:%S")
+        finish_reserve = datetime.strptime(reserve_data["finish_reserve"], "%Y-%m-%d %H:%M:%S")
+
+        # Obtener el día de la reserva
+        reserve_day = start_reserve.date()
+
+        # Obtener el restaurante y su calendario
+        restaurant = Restaurant.objects.get(id=order_data["restaurant"])
+        calendar = restaurant.calendar
+
+        # Obtener el schedule para el día especificado
+        schedule = get_schedule_for_day(calendar, reserve_day)
+
+        # Obtener las horas de apertura
+        opening_hours = schedule.opened_hours
+
+        # Obtener todas las mesas del restaurante
+        tables = restaurant.tables.all()
+
+        # Obtener reservas para ese día y mesa
+        reservations_day = Reserve.objects.filter(
+            start_reserve__date=reserve_day,
+            table__in=tables
+        ).exclude(assigned_order__status=OrderStatus.CANCELLED)
+
+        # Calcular las horas ocupadas para la mesa específica
+        occupied_hours = get_occupied_hours(
+            reservations_day.filter(table=reserve_data["table"]),
+            opening_hours
+        )
+
+        # Calcular las horas disponibles para esa mesa
+        available_hours = get_available_hours(opening_hours, occupied_hours)
+
+        # TODO: Verificar si el intervalo de reserva está dentro de las horas disponibles
+        # Calcular las horas disponibles para cada mesa
+        response_data = []
+        occupied_hours_per_table = {
+            table.id: get_occupied_hours(
+                reservations_day.filter(table=table),
+                opening_hours
+            ) for table in tables
+        }
+        for table in tables:
+            available_hours = get_available_hours(
+                opening_hours,
+                occupied_hours_per_table[table.id]
+            )
+
+            # Crear la estructura para cada mesa con detalles y horas disponibles
+            response_data.append({
+                "table": table.id,
+                "available_hours": available_hours
+            })
 
         reserve_serializer = ReserveSerializer(data=reserve_data)
         if not reserve_serializer.is_valid():
