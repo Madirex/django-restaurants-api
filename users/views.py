@@ -145,6 +145,7 @@ class UserViewSet(viewsets.GenericViewSet):
     # Realizar un pedido (orders) con sus diferentes order_lines
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def order(self, request):
+    # Crear Order y realizar operaciones
         data = request.data
 
         cart_code_code = data.get("cart_code_code")

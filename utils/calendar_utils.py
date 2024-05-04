@@ -1,5 +1,3 @@
-# your_django_app/utils/calendar_utils.py
-
 from schedules.models import Schedule
 from datetime import datetime
 from reserves.models import Reserve
