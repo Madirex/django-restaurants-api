@@ -556,19 +556,19 @@ class OrderTests(TestCase):
     def test_get_orders_success(self):
         """Test para obtener pedidos exitosamente"""
         response = self.auth_client.get(
-            '/orders/',  # Endpoint para obtener pedidos
+            '/orders/',
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         result = json.loads(response.content)
-        self.assertTrue(len(result) >= 2)  # Asegurarse de que haya al menos 2 pedidos
+        self.assertTrue(len(result) >= 2)
 
     def test_get_orders_unauthorized(self):
         """Test para obtener pedidos sin autenticación"""
-        client = APIClient()  # Cliente sin autenticación
+        client = APIClient()
         response = client.get(
-            '/orders/',  # Endpoint para obtener pedidos
+            '/orders/',
         )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -576,7 +576,7 @@ class OrderTests(TestCase):
     def test_get_orders_check_fields(self):
         """Test para verificar los campos de los pedidos"""
         response = self.auth_client.get(
-            '/orders/',  # Endpoint para obtener pedidos
+            '/orders/',
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -599,13 +599,11 @@ class OrderTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Comprobar si hay paginación en la respuesta
         self.assertIn('results', json.loads(response.content))
 
 class OrderTests(TestCase):
     def setUp(self):
-        # Configuración para las pruebas
-        self.client = APIClient()  # Cliente sin autenticación
+        self.client = APIClient()
 
         # Crea un usuario para las pruebas
         self.user = User.objects.create_user(
@@ -616,30 +614,157 @@ class OrderTests(TestCase):
             password='Password123!'
         )
 
-        # Crea un token para autenticación
         self.token = Token.objects.create(user=self.user)
 
-        # Crea un cliente autenticado para las pruebas
-        self.auth_client = APIClient()  # Debe crear el cliente aquí
+        self.auth_client = APIClient()
         self.auth_client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-        # Crea un restaurante para asociar con los pedidos
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
 
-        # Crea un pedido para las pruebas
         Order.objects.create(
             user=self.user,
-            restaurant=self.restaurant,  # Asegúrate de proporcionar un valor válido
+            restaurant=self.restaurant,
             total=100,
             total_dishes=5,
         )
 
     def test_get_orders_unauthorized(self):
         """Test para obtener pedidos sin autenticación"""
-        client = APIClient()  # Cliente sin autenticación
+        client = APIClient()
         response = client.get('/orders/')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    # TODO: def test_get_orders_success(self):
-    # TODO: def test_get_orders_no_orders(self):
+class GetOrderTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        # Crear usuario y pedido
+        self.user = User.objects.create_user(
+            username='ordertester',
+            email='orders@madirex.com',
+            password='Password123!',
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.auth_client = APIClient()
+        self.auth_client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        # Crear restaurante y pedido
+        self.restaurant = Restaurant.objects.create(name='Test Restaurant')
+
+        self.order = Order.objects.create(
+            user=self.user,
+            restaurant=self.restaurant,
+            total=100,
+            total_dishes=5,
+        )
+
+    def test_get_order_success(self):
+        """Test para obtener un pedido específico del usuario autenticado"""
+        response = self.auth_client.get(
+            f'/users/get_order/?order_id={self.order.id}',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content)['total'], '100.00')
+
+    def test_get_order_not_found(self):
+        """Test para obtener un pedido inexistente"""
+        response = self.auth_client.get(
+            '/users/get_order/?order_id=99999',  # ID inexistente
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(json.loads(response.content)['error'], "Pedido no encontrado.")
+
+class GetOrderByPkTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username='ordertester',
+            email='orders@madirex.com',
+            password='Password123!',
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.auth_client = APIClient()
+        self.auth_client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        # Crear restaurante y pedido
+        self.restaurant = Restaurant.objects.create(name='Test Restaurant')
+
+        self.order = Order.objects.create(
+            user=self.user,
+            restaurant=self.restaurant,
+            total=100,
+            total_dishes=5,
+        )
+
+    def test_order_get_by_pk_not_found(self):
+        """Test para obtener un pedido con pk inexistente"""
+        response = self.auth_client.get(
+            '/users/order/99999/',  # ID inexistente
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class CancelOrderTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username='ordertester',
+            email='orders@madirex.com',
+            password='Password123!',
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.auth_client = APIClient()
+        self.auth_client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        self.restaurant = Restaurant.objects.create(name='Test Restaurant')
+
+        self.order = Order.objects.create(
+            user=self.user,
+            restaurant=self.restaurant,
+            total=100,
+            total_dishes=5,
+        )
+
+    def test_cancel_order_success(self):
+        """Test para cancelar un pedido exitosamente"""
+        response = self.auth_client.post(
+            f'/users/cancel_order/{self.order.id}/',
+            {},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('message', json.loads(response.content))
+        self.assertEqual(json.loads(response.content)['message'], "Pedido cancelado exitosamente.")
+
+    def test_cancel_order_not_found(self):
+        """Test para cancelar un pedido inexistente"""
+        response = self.auth_client.post(
+            '/users/cancel_order/99999/',  # Pedido inexistente
+            {},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn('error', json.loads(response.content))
+        self.assertEqual(json.loads(response.content)['error'], "Pedido no encontrado.")
+
+    def test_cancel_order_already_cancelled(self):
+        """Test para cancelar un pedido que ya fue cancelado"""
+        self.order.status = OrderStatus.CANCELLED
+        self.order.save()
+
+        response = self.auth_client.post(
+            f'/users/cancel_order/{self.order.id}/',
+            {},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', json.loads(response.content))
+        self.assertEqual(json.loads(response.content)['error'], "El pedido ya está cancelado.")
