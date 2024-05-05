@@ -18,13 +18,13 @@ from orders.models import OrderStatus
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]  # Solo los administradores pueden realizar operaciones CRUD en los restaurantes
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'open_hours', 'get_schedules']:
             permission_classes = []
         else:
-            permission_classes = [IsAuthenticated, IsAdminUser]  # Solo los administradores pueden realizar operaciones CRUD en los restaurantes
+            permission_classes = [IsAuthenticated, IsAdminUser]
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
@@ -48,7 +48,6 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='schedules')
     def get_schedules(self, request, pk=None):
-    # TODO: Refactorizar esta función y poner con otras funciones como se pusieron abajo
         restaurant = self.get_object()
         calendar = restaurant.calendar
 
