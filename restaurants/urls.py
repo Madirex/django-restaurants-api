@@ -7,5 +7,6 @@ router = DefaultRouter()
 router.register('restaurants', views.RestaurantViewSet, basename='restaurants')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('menu/', views.MenuView.as_view(), name='menu'),
 ]

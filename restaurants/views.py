@@ -13,7 +13,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from schedules.models import Schedule
 from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours
 from orders.models import OrderStatus
+from dishes.models import Dish
+from dishes.serializers import DishSerializer
+from rest_framework import generics
+from restaurant_dish_link.models import RestaurantDishLink
 
+class MenuView(generics.ListAPIView):
+    queryset = Dish.objects.all()
+    serializer_class = DishSerializer
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
@@ -45,6 +52,14 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'], url_path='menu')
+    def get_menu(self, request, pk=None):
+        restaurant = self.get_object()
+        menu_links = RestaurantDishLink.objects.filter(restaurant=restaurant)
+        dishes = [link.dish for link in menu_links]
+        serializer = DishSerializer(dishes, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='schedules')
     def get_schedules(self, request, pk=None):
