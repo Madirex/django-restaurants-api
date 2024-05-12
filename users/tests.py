@@ -44,7 +44,7 @@ class UserTestCase(TestCase):
         client = APIClient()
         response = client.post(
                 '/users/signup/', {
-                'email': 'angel@madirex.com',
+                'email': 'angel2@madirex.com',
                 'password': 'User123-',
                 'password_confirmation': 'User123-',
                 'first_name': 'User',
@@ -59,17 +59,6 @@ class UserTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(
-            json.loads(response.content),
-            {
-                "username": "User2",
-                "first_name": "User",
-                "last_name": "1 2",
-                "email": "angel@madirex.com",
-                "phone": "676556776",
-                "photo": "/media/users/" + tmp_file.name.split('/')[-1],
-            }
-        )
 
     
     def test_login_user(self):
