@@ -31,7 +31,8 @@ class UserModelSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'phone',
-            'photo'
+            'photo',
+            'is_admin'
         )
 
 class UserLoginSerializer(serializers.Serializer):
