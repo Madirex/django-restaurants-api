@@ -22,7 +22,7 @@ class CartCodeModelSerializer(serializers.ModelSerializer):
 class CartCodeSerializer(serializers.Serializer):
     id = serializers.UUIDField(read_only=True)
     code = serializers.CharField(max_length=255)
-    is_active = serializers.BooleanField(required=False)
+    is_active = serializers.BooleanField(default=True, required=False)
     percent_discount = serializers.FloatField(min_value=0, max_value=100)
     fixed_discount = serializers.FloatField()
     available_uses = serializers.IntegerField()

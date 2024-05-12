@@ -20,7 +20,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(max_length=250)
-    is_active = serializers.BooleanField()
+    is_active = serializers.BooleanField(default=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 

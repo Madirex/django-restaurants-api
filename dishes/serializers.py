@@ -36,7 +36,7 @@ class DishSerializer(serializers.Serializer):
     calories = serializers.FloatField(validators=[MinValueValidator(0)])
     preparation_time = serializers.IntegerField(validators=[MinValueValidator(0)])
     category = serializers.CharField(max_length=255)
-    is_active = serializers.BooleanField(default=True)
+    is_active = serializers.BooleanField(default=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 

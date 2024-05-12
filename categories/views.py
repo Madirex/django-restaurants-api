@@ -16,7 +16,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
-            permission_classes = [IsAuthenticated, IsStandardUser]
+            permission_classes = []
         else:
             permission_classes = [IsAuthenticated, IsAdminUser]
         return [permission() for permission in permission_classes]
