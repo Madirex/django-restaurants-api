@@ -11,6 +11,8 @@ from django.utils import timezone
 from django.utils.timezone import datetime
 from reserves.models import Reserve
 from orders.models import Order
+from dishes.models import Dish
+from restaurant_dish_link.models import RestaurantDishLink
 
 class RestaurantTests(TestCase):
     def setUp(self):
@@ -406,3 +408,48 @@ class RestaurantAvailableTablesTests(TestCase):
         response = self.client.get(f"/restaurants/{self.restaurant.pk}/available-tables/?day={invalid_day}")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class RestaurantMenuTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        # Crear usuario administrador
+        self.admin_user = User.objects.create_user(
+            username='admin23',
+            email='admin@example.com',
+            password='admin123',
+            is_staff=True,
+            is_superuser=True,
+            is_admin=True,
+        )
+        self.admin_token = Token.objects.create(user=self.admin_user)
+
+        # Crear un calendario
+        self.calendar = Calendar.objects.create(
+            normal_start_date=timezone.now(),
+            summer_start_date=timezone.now() + timedelta(days=30),
+            winter_start_date=timezone.now() + timedelta(days=60),
+        )
+
+        # Crear un restaurante
+        self.restaurant = Restaurant.objects.create(
+            name="Test Restaurant",
+            calendar=self.calendar,
+        )
+
+        # Crear platos
+        self.dish1 = Dish.objects.create(name='Dish 1', description='Description 1', price=10.0, calories=100, preparation_time=20)
+        self.dish2 = Dish.objects.create(name='Dish 2', description='Description 2', price=15.0, calories=150, preparation_time=25)
+
+        # Crear enlaces entre restaurante y platos
+        self.link1 = RestaurantDishLink.objects.create(restaurant=self.restaurant, dish=self.dish1, stock=10)
+        self.link2 = RestaurantDishLink.objects.create(restaurant=self.restaurant, dish=self.dish2, stock=15)
+
+    def test_get_menu(self):
+        """Test para obtener el menú de un restaurante"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
+
+        response = self.client.get(f"/restaurants/{self.restaurant.pk}/menu/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
