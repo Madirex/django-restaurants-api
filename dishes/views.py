@@ -33,6 +33,9 @@ class DishViewSet(mixins.CreateModelMixin,
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        #ignorar el campo 'image' durante la actualización si es tipo texto
+        if 'image' in request.data and isinstance(request.data['image'], str):
+            request.data.pop('image', None)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(DishModelSerializer(instance).data)
