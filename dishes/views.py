@@ -54,7 +54,10 @@ class DishImageUpdateAPIView(APIView):
         except Dish.DoesNotExist:
             return Response({"error": "Plato no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = DishImageUpdateSerializer(dish, data=request.data, partial=True)
+        # Ignorar el campo 'category' durante la actualización
+        request.data.pop('category', None)
+
+        serializer = DishImageUpdateSerializer(instance=dish, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -14,13 +14,13 @@ from schedules.models import Schedule
 from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours
 from orders.models import OrderStatus
 from dishes.models import Dish
-from dishes.serializers import DishSerializer
+from dishes.serializers import DishModelSerializer
 from rest_framework import generics
 from restaurant_dish_link.models import RestaurantDishLink
 
 class MenuView(generics.ListAPIView):
     queryset = Dish.objects.all()
-    serializer_class = DishSerializer
+    serializer_class = DishModelSerializer
 
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
@@ -58,7 +58,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         restaurant = self.get_object()
         menu_links = RestaurantDishLink.objects.filter(restaurant=restaurant)
         dishes = [link.dish for link in menu_links]
-        serializer = DishSerializer(dishes, many=True)
+        serializer = DishModelSerializer(dishes, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='schedules')

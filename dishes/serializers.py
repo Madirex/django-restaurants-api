@@ -6,7 +6,6 @@ import uuid
 
 class DishModelSerializer(serializers.ModelSerializer):
     """Dish Model Serializer"""
-
     class Meta:
         """Meta class."""
 

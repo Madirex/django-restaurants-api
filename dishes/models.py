@@ -30,9 +30,4 @@ class Dish(models.Model):
         return f'{self.name}, {self.description}, {self.price}, {self.dish_type}, {self.ingredients}, {self.calories}, {self.image}, {self.preparation_time}, {self.category}'
 
     def save(self, *args, **kwargs):
-        # Al guardar el objeto Dish, busca la categoría por nombre y la asigna al campo de nombre de categoría
-        if self.category:
-            category = Category.objects.filter(name=self.category).first()
-            if category:
-                self.category = category
         super().save(*args, **kwargs)
