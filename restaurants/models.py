@@ -24,3 +24,21 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
+
+    def delete(self, *args, **kwargs):
+    # Eliminar el calendario asociado con todos sus horarios
+    # NOTE: Esto se hace para simplificar el proyecto. En un futuro se podría eliminar y hacer que cada calendar/schedule se pueda reciclar en otros restaurantes
+        if self.calendar:
+            # Eliminar customs_schedules
+            self.calendar.customs_schedules.all().delete()
+
+            # Eliminar normal_week_schedule, summer_week_schedule, winter_week_schedule
+            for schedule in [self.calendar.normal_week_schedule, self.calendar.summer_week_schedule, self.calendar.winter_week_schedule]:
+                if schedule:
+                    schedule.delete()
+
+        # Eliminar calendario
+        if self.calendar:
+            self.calendar.delete()
+
+        super().delete(*args, **kwargs)
