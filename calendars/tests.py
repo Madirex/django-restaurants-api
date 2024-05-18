@@ -129,6 +129,44 @@ class CalendarTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_add_closed_day_as_admin(self):
+        """Test para agregar un día de cierre como administrador"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': '2024-12-31'}
+
+        response = self.client.post(f"/calendars/{calendar.pk}/add-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('2024-12-31', response.data['closed_days'])
+
+    def test_remove_closed_day_as_admin(self):
+        """Test para eliminar un día de cierre como administrador"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': '2024-12-25'}
+
+        response = self.client.delete(f"/calendars/{calendar.pk}/remove-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn('2024-12-25', response.data['closed_days'])
+
 class IncorrectCalendarTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -222,3 +260,77 @@ class IncorrectCalendarTests(TestCase):
         response = self.client.get("/calendars/999/")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_add_closed_day_with_invalid_date(self):
+        """Test para agregar un día de cierre con una fecha inválida"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': 'invalid-date'}
+
+        response = self.client.post(f"/calendars/{calendar.pk}/add-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['detail'], 'Formato de fecha inválido.')
+
+    def test_add_closed_day_as_standard_user(self):
+        """Test para agregar un día de cierre como usuario estándar (debería fallar)"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.standard_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': '2024-12-31'}
+
+        response = self.client.post(f"/calendars/{calendar.pk}/add-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_remove_closed_day_with_invalid_date(self):
+        """Test para eliminar un día de cierre con una fecha inválida"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': 'invalid-date'}
+
+        response = self.client.delete(f"/calendars/{calendar.pk}/remove-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['detail'], 'Formato de fecha inválido. Use YYYY-MM-DD.')
+
+    def test_remove_closed_day_as_standard_user(self):
+        """Test para eliminar un día de cierre como usuario estándar (debería fallar)"""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.standard_token.key)
+
+        calendar = Calendar.objects.create(
+            normal_week_schedule=self.schedule,
+            normal_start_date='2024-01-01',
+            summer_start_date='2024-06-01',
+            winter_start_date='2024-12-01',
+            closed_days=['2024-01-01', '2024-12-25'],
+        )
+
+        data = {'closed_day': '2024-12-25'}
+
+        response = self.client.delete(f"/calendars/{calendar.pk}/remove-closed-day/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
