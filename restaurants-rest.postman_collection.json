@@ -825,7 +825,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/madir/Pictures/dOBv7kY.png"
+									"src": "/C:/Users/madir/Pictures/linux.jpg"
 								}
 							]
 						},
@@ -1747,7 +1747,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Madirex Restaurant\",\r\n    \"schedule_customizations\": [],\r\n    \"address\": {\r\n        \"city\": \"ciudad de las rosas\",\r\n        \"number\": \"32 st\",\r\n        \"street\": \"calle test\",\r\n        \"country\": \"country test\",\r\n        \"province\": \"province test\",\r\n        \"postal_code\": \"2934802\"\r\n    },\r\n    \"normal_start_date\": \"2024-01-01\",\r\n    \"summer_start_date\": \"2024-06-01\",\r\n    \"winter_start_date\": \"2024-12-01\"\r\n}",
+							"raw": "{\r\n    \"normal_start_date\": \"2024-01-01\",\r\n    \"summer_start_date\": \"2024-06-01\",\r\n    \"winter_start_date\": \"2024-12-01\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1767,6 +1767,72 @@
 					"response": []
 				},
 				{
+					"name": "Add Closed Day",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"closed_day\": \"2024-12-25\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}calendars/2/add-closed-day/",
+							"host": [
+								"{{url}}calendars"
+							],
+							"path": [
+								"2",
+								"add-closed-day",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Closed Day",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"closed_day\": \"2024-12-25\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}calendars/2/remove-closed-day/",
+							"host": [
+								"{{url}}calendars"
+							],
+							"path": [
+								"2",
+								"remove-closed-day",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Calendar",
 					"request": {
 						"method": "PUT",
@@ -1778,7 +1844,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Madirex Restaurant Edit\",\r\n    \"address\": {\r\n        \"city\": \"ciudad de las rosas edit\",\r\n        \"number\": \"32 st edit\",\r\n        \"street\": \"calle test edit\",\r\n        \"country\": \"country test edit\",\r\n        \"province\": \"province test edit\",\r\n        \"postal_code\": \"2934802edi\"\r\n    },\r\n    \"normal_week_schedule\": 1,\r\n    \"summer_week_schedule\": 2,\r\n    \"winter_week_schedule\": 3,\r\n    \"normal_start_date\": \"2024-01-01\",\r\n    \"summer_start_date\": \"2024-02-01\",\r\n    \"winter_start_date\": \"2024-03-01\"\r\n}",
+							"raw": "{\r\n    \"normal_week_schedule\": 1,\r\n    \"summer_week_schedule\": 2,\r\n    \"winter_week_schedule\": 3,\r\n    \"normal_start_date\": \"2024-01-01\",\r\n    \"summer_start_date\": \"2024-02-01\",\r\n    \"winter_start_date\": \"2024-03-01\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1892,7 +1958,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"opened_hours\": [\r\n        \"11:30\",\r\n        \"12:00\"\r\n    ],\r\n    \"calendar\": 1\r\n}",
+							"raw": "{\r\n    \"day\": \"2031-08-21\",\r\n    \"opened_hours\": [\r\n        \"11:30\",\r\n        \"12:00\",\r\n        \"13:00\",\r\n        \"14:00\",\r\n        \"15:00\",\r\n        \"15:30\",\r\n        \"16:00\",\r\n        \"16:30\"\r\n    ],\r\n    \"calendar\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
