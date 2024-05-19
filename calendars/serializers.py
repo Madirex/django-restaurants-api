@@ -50,7 +50,7 @@ class CalendarSerializer(serializers.Serializer):
         help_text="Schedule para semanas de invierno"
     )
 
-    normal_start_date = serializers.DateField()
+    normal_start_date = serializers.DateField(required=False)
     summer_start_date = serializers.DateField(required=False)
     winter_start_date = serializers.DateField(required=False)
     closed_days = serializers.ListField(
