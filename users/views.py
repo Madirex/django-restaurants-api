@@ -17,8 +17,9 @@ from reserves.serializers import ReserveSerializer
 from cartcodes.models import CartCode
 from datetime import datetime
 from restaurants.models import Restaurant
-from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours
+from utils.calendar_utils import get_schedule_for_day, get_occupied_hours, get_available_hours, is_time_range_available
 from reserves.models import Reserve
+from rest_framework.exceptions import ValidationError
 
 class UserViewSet(viewsets.GenericViewSet):
 
@@ -232,7 +233,10 @@ class UserViewSet(viewsets.GenericViewSet):
         calendar = restaurant.calendar
 
         # Obtener el schedule para el día especificado
-        schedule = get_schedule_for_day(calendar, reserve_day)
+        try:
+            schedule = get_schedule_for_day(calendar, reserve_day)
+        except Exception as e:
+            return Response({'error': 'Error al obtener el horario para el día especificado. El calendario no se ha terminado de configurar correctamente. {}'.format(e)}, status=400)
 
         # Obtener las horas de apertura
         opening_hours = schedule.opened_hours
@@ -251,8 +255,6 @@ class UserViewSet(viewsets.GenericViewSet):
             reservations_day.filter(table=reserve_data["table"]),
             opening_hours
         )
-
-        # Calcular las horas disponibles para esa mesa
         available_hours = get_available_hours(opening_hours, occupied_hours)
 
         # Verificar si el intervalo de reserva está dentro de las horas disponibles
