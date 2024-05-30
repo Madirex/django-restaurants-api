@@ -95,10 +95,11 @@ class UserSignUpSerializer(serializers.Serializer):
 
         return data
 
-    def create(self, data):
-        data.pop('password_confirmation')
-        user = User.objects.create_user(**data)
-        return user
+    def create(self, validated_data):
+        validated_data.pop('password_confirmation')
+        user = User.objects.create_user(**validated_data)
+        token, created = Token.objects.get_or_create(user=user)
+        return user, token.key
 
 class UserAddressUpdateSerializer(serializers.ModelSerializer):
     address = serializers.JSONField(required=False, allow_null=True)

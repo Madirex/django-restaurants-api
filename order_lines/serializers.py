@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import OrderLine
 from dishes.models import Dish
 from orders.models import Order
-from django.core.validators import MinValueValidator
 import uuid
 
 class OrderLineSerializer(serializers.ModelSerializer):

@@ -28,7 +28,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'open_hours', 'get_schedules', 'get_menu']:
+        if self.action in ['list', 'retrieve', 'open_hours', 'get_schedules', 'get_menu', 'get_available_tables']:
             permission_classes = []
         else:
             permission_classes = [IsAuthenticated, IsAdminUser]

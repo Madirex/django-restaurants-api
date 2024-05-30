@@ -11,6 +11,9 @@ def get_schedule_for_day(calendar, day):
     if custom_schedule:
         return custom_schedule
 
+    if not calendar.normal_start_date or not calendar.summer_start_date or not calendar.winter_start_date or not calendar.normal_week_schedule or not calendar.summer_week_schedule or not calendar.winter_week_schedule:
+        raise ValidationError("El calendario no está configurado correctamente")
+
     # Determinar la estación y obtener el Schedule correspondiente
     if calendar.normal_start_date <= day < calendar.summer_start_date:
         schedule = calendar.normal_week_schedule

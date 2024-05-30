@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from .models import Table
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
 from restaurants.models import Restaurant
 from orders.models import Order
 from reserves.serializers import ReserveSerializer
+from django.core.exceptions import ValidationError
 
 class TableModelSerializer(serializers.ModelSerializer):
     """Serializer para el modelo de Mesa"""
@@ -29,10 +30,11 @@ class TableModelSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at')
 
 class TableSerializer(serializers.Serializer):
-    x_position = serializers.IntegerField(validators=[MinValueValidator(1)])
-    y_position = serializers.IntegerField(validators=[MinValueValidator(1)])
-    min_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
-    max_chairs = serializers.IntegerField(validators=[MinValueValidator(0)])
+    pk = serializers.IntegerField(read_only=True)
+    x_position = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    y_position = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    min_chairs = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_chairs = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
     is_active = serializers.BooleanField(default=True, required=False)
 

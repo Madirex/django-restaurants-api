@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Dish
 from categories.models import Category
-from django.core.validators import MinValueValidator, FileExtensionValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator, MaxValueValidator
 import uuid
 
 class DishModelSerializer(serializers.ModelSerializer):
@@ -29,11 +29,11 @@ class DishModelSerializer(serializers.ModelSerializer):
 class DishSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(max_length=255)
-    price = serializers.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0), MaxValueValidator(10000)])
     dish_type = serializers.ChoiceField(choices=Dish.DishType.choices)
     ingredients = serializers.JSONField(default=list)
-    calories = serializers.FloatField(validators=[MinValueValidator(0)])
-    preparation_time = serializers.IntegerField(validators=[MinValueValidator(0)])
+    calories = serializers.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10000)])
+    preparation_time = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(1440)])
     category = serializers.CharField(max_length=255)
     is_active = serializers.BooleanField(default=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
