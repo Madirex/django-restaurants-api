@@ -13,12 +13,15 @@ class CartCodeViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     serializer_class = CartCodeSerializer
     queryset = CartCode.objects.all()
+    """ViewSet para CartCodes."""
 
     def get_permissions(self):
+        """Asigna permisos basados en la acción."""
         permission_classes = [IsAuthenticated, IsAdminUser]
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crea un nuevo código de carrito."""
         serializer = CartCodeSerializer(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
         cart_code = serializer.save()
@@ -26,6 +29,7 @@ class CartCodeViewSet(mixins.CreateModelMixin,
         return Response(data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualiza un código de carrito."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -34,11 +38,13 @@ class CartCodeViewSet(mixins.CreateModelMixin,
         return Response(CartCodeSerializer(instance).data)
 
     def retrieve(self, request, *args, **kwargs):
+        """Devuelve un código de carrito."""
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Elimina un código de carrito."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -6,6 +6,7 @@ from django.db.models import JSONField
 from utils.validators import validate_address
 
 class User(AbstractUser):
+    """User model."""
     email = models.EmailField('email address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -20,5 +21,6 @@ class User(AbstractUser):
     address = JSONField(default=dict, blank=True, validators=[validate_address])
 
     def save(self, *args, **kwargs):
+        """Guardar usuario."""
         validate_address(self.address)  # Validar Address antes de guardar
         super().save(*args, **kwargs)

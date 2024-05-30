@@ -20,6 +20,7 @@ class CartCodeModelSerializer(serializers.ModelSerializer):
         )
 
 class CartCodeSerializer(serializers.Serializer):
+    """Serializer para crear/actualizar códigos de carrito"""
     id = serializers.UUIDField(read_only=True)
     code = serializers.CharField(max_length=255)
     is_active = serializers.BooleanField(default=True, required=False)
@@ -41,6 +42,7 @@ class CartCodeSerializer(serializers.Serializer):
 
 
     def update(self, instance, validated_data):
+        """Actualiza un código de carrito."""
         instance.code = validated_data.get('code', instance.code)
         if CartCode.objects.exclude(pk=instance.pk).filter(code=instance.code).exists():
             raise serializers.ValidationError("This code already exists.")
@@ -53,5 +55,6 @@ class CartCodeSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
+        """Crea un nuevo código de carrito."""
         cart_code = CartCode.objects.create(**validated_data)
         return cart_code

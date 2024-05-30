@@ -7,7 +7,9 @@ from schedules.models import Schedule
 from calendars.models import Calendar
 
 class ScheduleTests(TestCase):
+    """Tests para el modelo Schedule."""
     def setUp(self):
+        """Inicializar datos de prueba."""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -114,7 +116,9 @@ class ScheduleTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 class IncorrectScheduleTests(TestCase):
+    """Tests para Schedule con datos incorrectos."""
     def setUp(self):
+        """Inicializar datos de prueba."""
         self.client = APIClient()
 
         # Crear usuario administrador

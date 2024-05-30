@@ -8,7 +8,9 @@ from dishes.models import Dish
 from restaurant_dish_link.models import RestaurantDishLink
 
 class RestaurantDishLinkTests(TestCase):
+    """Tests para el modelo RestaurantDishLink."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador con permisos
@@ -118,7 +120,9 @@ class RestaurantDishLinkTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 class IncorrectRestaurantDishLinkTests(TestCase):
+    """Tests para el modelo RestaurantDishLink con datos incorrectos."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador

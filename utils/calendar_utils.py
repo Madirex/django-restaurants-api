@@ -5,6 +5,7 @@ from datetime import timedelta
 from rest_framework.exceptions import ValidationError
 
 def get_schedule_for_day(calendar, day):
+    """Dado un calendario y un día, devuelve el Schedule correspondiente."""
     # Lógica para obtener el Schedule para un día específico
     custom_schedule = Schedule.objects.filter(calendar=calendar, day=day).first()
 
@@ -30,21 +31,22 @@ def get_schedule_for_day(calendar, day):
 
 
 def get_occupied_hours(reservations, opening_hours):
+    """Dadas las reservas y las horas de apertura, devuelve las horas ocupadas."""
     occupied_hours = set()
 
     for reservation in reservations:
         start_reserve = reservation.start_reserve.time()
-        finish_reserve = (reservation.finish_reserve - timedelta(minutes=5)).time()  # Restar 5 minutos
+        finish_reserve = (reservation.finish_reserve - timedelta(minutes=5)).time()
 
         for hour in opening_hours:
             time_hour = datetime.strptime(str(hour), "%H:%M:%S").time()
 
-            if start_reserve <= time_hour < finish_reserve:  # Cambiar <= por <
+            if start_reserve <= time_hour < finish_reserve:
                 occupied_hours.add(str(hour))
 
     return occupied_hours
 
 
 def get_available_hours(opening_hours, occupied_hours):
-    # Lógica para obtener las horas disponibles
+    """Dadas las horas de apertura y las horas ocupadas, devuelve las horas disponibles."""
     return [str(hour) for hour in opening_hours if str(hour) not in occupied_hours]

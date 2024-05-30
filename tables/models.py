@@ -14,8 +14,10 @@ class Table(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    """Modelo para las mesas de los restaurantes"""
 
     class Meta:
+        """Meta options."""
         unique_together = ('x_position', 'y_position')
 
     def __str__(self):

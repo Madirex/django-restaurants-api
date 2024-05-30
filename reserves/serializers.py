@@ -4,7 +4,9 @@ from datetime import timedelta
 from orders.models import OrderStatus
 
 class ReserveSerializer(serializers.ModelSerializer):
+    """Serializer para el modelo Reserve."""
     class Meta:
+        """Clase Meta."""
         model = Reserve
         fields = ['id', 'start_reserve', 'finish_reserve', 'assigned_order', 'assigned_chairs', 'table']
 

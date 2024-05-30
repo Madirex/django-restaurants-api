@@ -11,7 +11,9 @@ from django.utils import timezone
 from datetime import timedelta
 
 class ReserveTests(TestCase):
+    """Tests para el modelo Reserve."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear usuario administrador
@@ -134,7 +136,9 @@ class ReserveTests(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.admin_token.key)
 
 class IncorrectReserveTests(TestCase):
+    """Tests para el modelo Reserve con errores."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear usuario administrador

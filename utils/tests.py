@@ -25,7 +25,9 @@ from utils.validators import (
 )
 
 class ScheduleUtilsTests(TestCase):
+    """Pruebas para las utilidades de Schedule."""
     def setUp(self):
+        """Configuración de las pruebas."""
         self.calendar = Calendar.objects.create(
             normal_start_date=date(2022, 1, 1),
             summer_start_date=date(2022, 6, 1),
@@ -70,6 +72,7 @@ class ScheduleUtilsTests(TestCase):
 
 class AvailableHoursTests(TestCase):
     def setUp(self):
+        """Configuración de las pruebas."""
         self.opening_hours = ["08:00:00", "10:00:00", "12:00:00", "14:00:00"]
         self.occupied_hours = {"10:00:00", "12:00:00"}
 
@@ -155,7 +158,9 @@ class ValidateHalfHourTests(TestCase):
         )
 
 class ValidateUniqueScheduleDayTests(TestCase):
+    """Validar que no exista un horario para un día en el calendario"""
     def setUp(self):
+        """Configuración de las pruebas."""
         self.calendar = Calendar.objects.create(
             normal_start_date=date(2022, 1, 1),
             summer_start_date=date(2022, 6, 1),

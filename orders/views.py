@@ -37,22 +37,22 @@ class OrderViewSet(
         """Crea un nuevo Order."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        order = serializer.save()  # Guardar el nuevo pedido
+        order = serializer.save()
         return Response(self.get_serializer(order).data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         """Actualiza un Order existente."""
-        partial = kwargs.pop("partial", False)  # Permitir actualizaciones parciales
-        instance = self.get_object()  # Obtener el pedido a actualizar
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        instance = serializer.save()  # Guardar cambios
+        instance = serializer.save()
         return Response(self.get_serializer(instance).data)
 
     def destroy(self, request, *args, **kwargs):
         """Elimina un Order."""
-        instance = self.get_object()  # Obtener el pedido a eliminar
-        self.perform_destroy(instance)  # Realizar la eliminación
+        instance = self.get_object()
+        self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
@@ -63,14 +63,14 @@ class OrderViewSet(
 
     def retrieve(self, request, *args, **kwargs):
         """Obtiene un Order específico."""
-        instance = self.get_object()  # Obtener el pedido específico
+        instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     @action(detail=True, methods=["patch"], url_path="finish")
     def finish_order(self, request, pk=None):
         """Marcar un pedido como finalizado."""
-        instance = self.get_object()  # Obtener el pedido
-        instance.finished_at = timezone.now()  # Marcar la fecha de finalización
+        instance = self.get_object()
+        instance.finished_at = timezone.now()
         instance.save()
         return Response(self.get_serializer(instance).data)

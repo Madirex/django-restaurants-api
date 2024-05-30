@@ -7,7 +7,9 @@ from cartcodes.models import CartCode
 from rest_framework.authtoken.models import Token
 
 class CartCodeTests(TestCase):
+    """Test para el modelo CartCode"""
     def setUp(self):
+        """Configuración inicial de los tests"""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -161,7 +163,9 @@ from cartcodes.models import CartCode
 from rest_framework.authtoken.models import Token
 
 class IncorrectCartCodeTests(TestCase):
+    """Test para el modelo CartCode"""
     def setUp(self):
+        """Configuración inicial de los tests"""
         self.client = APIClient()
 
         # Crear un usuario administrador

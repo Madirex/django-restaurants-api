@@ -7,7 +7,9 @@ from schedules.models import Schedule
 from calendars.models import Calendar
 
 class CalendarTests(TestCase):
+    """Test para el modelo Calendar."""
     def setUp(self):
+        """Configuración inicial de las pruebas."""
         self.client = APIClient()
 
         # Crear usuario administrador y token
@@ -168,7 +170,9 @@ class CalendarTests(TestCase):
         self.assertNotIn('2024-12-25', response.data['closed_days'])
 
 class IncorrectCalendarTests(TestCase):
+    """Test para el modelo Calendar con datos incorrectos."""
     def setUp(self):
+        """Configuración inicial de las pruebas."""
         self.client = APIClient()
 
         # Crear usuario administrador y token

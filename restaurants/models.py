@@ -6,6 +6,7 @@ from utils.validators import validate_address
 from calendars.models import Calendar
 
 class Restaurant(models.Model):
+    """Modelo para representar un restaurante."""
     name = models.CharField(max_length=255)
     address = JSONField(default=dict, blank=True, validators=[validate_address])
     active = models.BooleanField(default=True)
@@ -23,11 +24,13 @@ class Restaurant(models.Model):
     )
 
     def __str__(self):
+        """Return a string representation"""
         return self.name
 
     def delete(self, *args, **kwargs):
-    # Eliminar el calendario asociado con todos sus horarios
-    # NOTE: Esto se hace para simplificar el proyecto. En un futuro se podría eliminar y hacer que cada calendar/schedule se pueda reciclar en otros restaurantes
+        """Eliminar un restaurante"""
+        # Eliminar el calendario asociado con todos sus horarios
+        # NOTE: Esto se hace para simplificar el proyecto. En un futuro se podría eliminar y hacer que cada calendar/schedule se pueda reciclar en otros restaurantes
         if self.calendar:
             # Eliminar customs_schedules
             self.calendar.customs_schedules.all().delete()

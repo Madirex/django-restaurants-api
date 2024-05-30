@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Calendar
 from schedules.models import Schedule
-from django.core.validators import MinValueValidator
 
 class ScheduleModelSerializer(serializers.ModelSerializer):
     """Schedule Model Serializer"""
@@ -26,7 +25,7 @@ class CalendarModelSerializer(serializers.ModelSerializer):
             'summer_start_date',
             'winter_start_date',
             'closed_days',
-            'customs_schedules',  # Incluir el campo schedules
+            'customs_schedules',
         )
 
 class CalendarSerializer(serializers.Serializer):

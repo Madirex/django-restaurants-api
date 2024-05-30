@@ -6,7 +6,6 @@ from rest_framework.permissions import BasePermission
 # Models
 from users.models import User
 
-
 class IsStandardUser(BasePermission):
     """Allow access."""
 

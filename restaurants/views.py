@@ -19,15 +19,18 @@ from rest_framework import generics
 from restaurant_dish_link.models import RestaurantDishLink
 
 class MenuView(generics.ListAPIView):
+    """Vista para obtener el menú de un restaurante."""
     queryset = Dish.objects.all()
     serializer_class = DishModelSerializer
 
 class RestaurantViewSet(viewsets.ModelViewSet):
+    """Restaurant ViewSet."""
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_permissions(self):
+        """Determinar permisos basados en la acción."""
         if self.action in ['list', 'retrieve', 'open_hours', 'get_schedules', 'get_menu', 'get_available_tables']:
             permission_classes = []
         else:
@@ -35,12 +38,14 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crear un nuevo restaurante."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualizar un restaurante."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -49,12 +54,14 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Eliminar un restaurante."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='menu')
     def get_menu(self, request, pk=None):
+        """Obtener el menú de un restaurante."""
         restaurant = self.get_object()
         menu_links = RestaurantDishLink.objects.filter(restaurant=restaurant)
         dishes = [link.dish for link in menu_links]
@@ -63,6 +70,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='schedules')
     def get_schedules(self, request, pk=None):
+        """Obtener los horarios de un restaurante."""
         restaurant = self.get_object()
         calendar = restaurant.calendar
 
@@ -140,6 +148,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='available-tables')
     def get_available_tables(self, request, pk=None):
+        """Obtener las mesas disponibles de un restaurante."""
         restaurant = self.get_object()
         calendar = restaurant.calendar
 

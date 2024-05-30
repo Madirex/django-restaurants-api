@@ -6,7 +6,9 @@ from categories.models import Category
 from rest_framework.authtoken.models import Token
 
 class CategoryTests(TestCase):
+    """Test para el modelo de categorías."""
     def setUp(self):
+        """Configuración inicial"""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -97,7 +99,9 @@ class CategoryTests(TestCase):
 
 
 class IncorrectCategoryTests(TestCase):
+    """Test para categorías con permisos incorrectos."""
     def setUp(self):
+        """Configuración inicial"""
         self.client = APIClient()
 
         # Crear un usuario administrador

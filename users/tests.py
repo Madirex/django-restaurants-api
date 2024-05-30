@@ -19,7 +19,9 @@ from rest_framework.authtoken.models import Token
 
 
 class UserTestCase(TestCase):
+    """Tests de Usuario."""
     def setUp(self):
+        """Inicializar datos de prueba."""
         user = User(
             email='tests@madirex.com',
             first_name='Admin',
@@ -33,7 +35,7 @@ class UserTestCase(TestCase):
         self.token = Token.objects.create(user=user)
 
     def test_signup_user(self):
-        """Check if we can create an user"""
+        """Comprobar registro de usuario."""
 
         image = Image.new('RGB', (100, 100))
 
@@ -62,6 +64,7 @@ class UserTestCase(TestCase):
 
     
     def test_login_user(self):
+        """Comprobar Login de usuario."""
         client = APIClient()
         response = client.post(
                 '/users/login/', {
@@ -114,6 +117,7 @@ class UserTestCase(TestCase):
 
 
     def test_me_authenticated(self):
+        """Test para obtener usuario autenticado."""
         client = APIClient()
         user = User.objects.get(username='admintest')
         client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
@@ -127,10 +131,12 @@ class UserTestCase(TestCase):
         self.assertEqual(result['last_name'], 'Admin')
 
     def test_me_unauthenticated(self):
+        """Comprobar usuario no autorizado."""
         response = self.client.get('/users/me/')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 class UserSignUpFailTests(TestCase):
+    """Pruebas de registro de usuario fallidas."""
     def setUp(self):
         user = User(
             email='existing@madirex.com',
@@ -227,7 +233,9 @@ class UserSignUpFailTests(TestCase):
         self.assertEqual(result['phone'], ["Debes introducir un número con el siguiente formato: +999999999. El límite son de 15 dígitos."])
 
 class UserModifyTests(TestCase):
+    """Pruebas de modificación de usuario."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.user = User(
             email='modify@madirex.com',
             first_name='Mod',
@@ -315,7 +323,9 @@ class UserModifyTests(TestCase):
         self.assertEqual(result['phone'], ["Debes introducir un número con el siguiente formato: +999999999. El límite son de 15 dígitos."])
 
 class UserModifyTests(TestCase):
+    """Pruebas de modificación de usuario."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.user = User(
             email='modify@madirex.com',
             first_name='Mod',
@@ -387,7 +397,9 @@ class UserModifyTests(TestCase):
         self.assertEqual(result['email'], ["Ya existe usuario con este email address."])
 
 class UserAddressUpdateTests(TestCase):
+    """Pruebas de actualización de dirección de usuario."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         # Crear un usuario para las pruebas
         self.user = User(
             email='user@madirex.com',
@@ -501,7 +513,9 @@ class UserAddressUpdateTests(TestCase):
         self.assertEqual(result['address'], ["El campo 'street' no debe exceder 100 caracteres."])
 
 class OrderTests(TestCase):
+    """Pruebas de pedidos."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         # Crear un usuario para las pruebas
         self.user = User(
             email='orders@madirex.com',
@@ -591,7 +605,9 @@ class OrderTests(TestCase):
         self.assertIn('results', json.loads(response.content))
 
 class OrderTests(TestCase):
+    """Pruebas de pedidos."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.client = APIClient()
 
         # Crea un usuario para las pruebas
@@ -625,7 +641,9 @@ class OrderTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 class GetOrderTests(TestCase):
+    """Pruebas para obtener un pedido específico."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.client = APIClient()
 
         # Crear usuario y pedido
@@ -667,7 +685,9 @@ class GetOrderTests(TestCase):
         self.assertEqual(json.loads(response.content)['error'], "Pedido no encontrado.")
 
 class GetOrderByPkTests(TestCase):
+    """Pruebas para obtener un pedido por su clave primaria."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.client = APIClient()
 
         self.user = User.objects.create_user(
@@ -698,7 +718,9 @@ class GetOrderByPkTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 class CancelOrderTests(TestCase):
+    """Pruebas para cancelar un pedido."""
     def setUp(self):
+        """Configuración de datos de prueba."""
         self.client = APIClient()
 
         self.user = User.objects.create_user(

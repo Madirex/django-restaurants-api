@@ -5,6 +5,7 @@ from dishes.models import Dish
 from orders.models import Order
 
 class OrderLine(models.Model):
+    """Línea de pedido."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
@@ -15,9 +16,11 @@ class OrderLine(models.Model):
     selected = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
+        """Calcula el total y el subtotal de la línea de pedido."""
         self.total = self.quantity * self.price
         self.subtotal = self.total
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """Devuelve la representación en string de la línea de pedido."""
         return f'OrderLine {self.id}: {self.quantity}x {self.dish.name} (${self.total})'

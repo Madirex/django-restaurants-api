@@ -7,7 +7,9 @@ from restaurants.models import Restaurant
 from tables.models import Table
 
 class TableTests(TestCase):
+    """Tests para el modelo Table."""
     def setUp(self):
+        """Inicializar datos de prueba."""
         self.client = APIClient()
 
         self.admin_user = User.objects.create_user(

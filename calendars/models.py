@@ -5,6 +5,7 @@ from datetime import date
 from schedules.models import Schedule
 
 class Calendar(models.Model):
+    """Modelo de calendario."""
     normal_week_schedule = models.ForeignKey(
         Schedule,
         on_delete=models.CASCADE,

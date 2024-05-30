@@ -20,6 +20,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Meta options."""
         model = Schedule
         fields = (
             'pk',

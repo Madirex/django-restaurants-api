@@ -16,6 +16,7 @@ class OrderSerializer(serializers.ModelSerializer):
     reserves = ReserveSerializer(many=True, read_only=True)
 
     class Meta:
+        """Clase Meta."""
         model = Order
         fields = (
             'pk',
@@ -38,7 +39,7 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ('total', 'total_dishes')
 
     def validate_status(self, value):
-    # Validar el campo 'status' para asegurar que es uno de los valores permitidos
+        """Validar que el estado sea uno de los valores permitidos."""
         if value not in [choice.value for choice in OrderStatus]:
             raise serializers.ValidationError({
                 "status": f"Estado no válido: {value}. Debe ser uno de los valores permitidos: {', '.join([choice.value for choice in OrderStatus])}."

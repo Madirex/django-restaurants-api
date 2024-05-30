@@ -18,6 +18,7 @@ class TableViewSet(mixins.CreateModelMixin,
     queryset = Table.objects.all()
 
     def get_permissions(self):
+        """Permiso para este viewset."""
         if self.action in ['list', 'retrieve']:
             permission_classes = [IsAuthenticated, IsStandardUser]
         else:
@@ -25,6 +26,7 @@ class TableViewSet(mixins.CreateModelMixin,
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crear una mesa."""
         serializer = TableSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         table = serializer.save()
@@ -34,6 +36,7 @@ class TableViewSet(mixins.CreateModelMixin,
         )
 
     def update(self, request, *args, **kwargs):
+        """Actualizar una mesa."""
         instance = self.get_object()
         serializer = TableSerializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -41,6 +44,7 @@ class TableViewSet(mixins.CreateModelMixin,
         return Response(TableModelSerializer(instance).data)
 
     def destroy(self, request, *args, **kwargs):
+        """Eliminar una mesa."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

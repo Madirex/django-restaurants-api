@@ -7,7 +7,9 @@ from dishes.models import Dish
 from categories.models import Category
 
 class DishTests(TestCase):
+    """Test para platos."""
     def setUp(self):
+        """Configuración inicial"""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -147,7 +149,9 @@ class DishTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 class IncorrectDishTests(TestCase):
+    """Test para platos incorrectos."""
     def setUp(self):
+        """Configuración inicial"""
         self.client = APIClient()
 
         # Crear un usuario administrador

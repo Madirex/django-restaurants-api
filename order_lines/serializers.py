@@ -10,6 +10,7 @@ class OrderLineSerializer(serializers.ModelSerializer):
     dish_name = serializers.CharField(source='dish.name', read_only=True)
 
     class Meta:
+        """Clase Meta."""
         model = OrderLine
         fields = (
             'id',

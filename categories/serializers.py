@@ -19,12 +19,14 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         )
 
 class CategorySerializer(serializers.Serializer):
+    """Serializer para crear/actualizar categorías"""
     name = serializers.CharField(max_length=250)
     is_active = serializers.BooleanField(default=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
     def validate_name(self, value):
+        """Comprueba que sea un nombre único."""
         value = value.lower()
         if Category.objects.filter(name__iexact=value).exists():
             raise serializers.ValidationError("Ya existe una categoría con este nombre.")
@@ -32,5 +34,6 @@ class CategorySerializer(serializers.Serializer):
         return value
 
     def create(self, data):
+        """Crea una nueva categoría."""
         exp = Category.objects.create(**data)
         return exp

@@ -10,6 +10,7 @@ ALLOWED_ADDRESS_FIELDS = {
 }
 
 def validate_address(address):
+    """Valida una dirección."""
     if not isinstance(address, dict):
         raise ValidationError("La dirección debe ser un objeto JSON.")
 
@@ -38,6 +39,7 @@ def validate_address(address):
     return address
 
 def validate_half_hour(time_list):
+    """Validar que los tiempos sean cada media hora y con segundos igual a 0"""
     for t in time_list:
         # Asegurarse de que el minuto sea 0 o 30 y los segundos sean 0
         if t.minute not in [0, 30] or t.second != 0:

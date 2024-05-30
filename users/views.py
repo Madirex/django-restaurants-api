@@ -23,7 +23,7 @@ from rest_framework.exceptions import ValidationError
 from tables.models import Table
 
 class UserViewSet(viewsets.GenericViewSet):
-
+    """User view set."""
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserModelSerializer
 
@@ -63,7 +63,7 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # Acción para obtener un pedido por ID
-    #NO HACER CON PK PORQUE DA ERROR - CUIDADO CON TypeError: UserViewSet.order() got an unexpected keyword argument 'pk'
+    # NOTE: NO HACER CON PK PORQUE DA ERROR - CUIDADO CON TypeError: UserViewSet.order() got an unexpected keyword argument 'pk'
     @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
     def order(self, request, pk=None):
         """Devolver un pedido específico del usuario autenticado."""
@@ -122,6 +122,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def order(self, request):
+        """Crear un pedido."""
         # Crear Order y realizar operaciones
         data = request.data
 
@@ -269,6 +270,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def cancel_order(self, request, pk=None):
+        """Cancelar un pedido."""
         # Obten el pedido por ID y verifica que pertenece al usuario autenticado
         order = Order.objects.filter(id=pk, user=request.user).first()
 

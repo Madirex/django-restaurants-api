@@ -9,7 +9,9 @@ from order_lines.models import OrderLine
 from restaurants.models import Restaurant
 
 class OrderLineTests(TestCase):
+    """Test para el modelo OrderLine."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -139,7 +141,9 @@ class OrderLineTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 class IncorrectOrderLineTests(TestCase):
+    """Test para líneas de pedido con datos incorrectos."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador

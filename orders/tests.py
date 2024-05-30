@@ -10,8 +10,9 @@ from cartcodes.models import CartCode
 from decimal import Decimal
 
 class OrderTests(TestCase):
-    # Configuración de la clase de prueba
+   """Tests para el modelo Order."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
         # Usuarios, restaurantes, y otros datos necesarios
         self.admin_user = User.objects.create_user(
@@ -87,7 +88,9 @@ class OrderTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 class IncorrectOrderTests(TestCase):
+    """Tests para el modelo Order con errores."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador

@@ -21,18 +21,21 @@ class ScheduleViewSet(
     queryset = Schedule.objects.all()
 
     def get_permissions(self):
+        """Permisos para este viewset."""
         if self.action in ['list', 'retrieve']:
             return [IsAuthenticated(), IsStandardUser()]
         else:
             return [IsAuthenticated(), IsAdminUser()]
 
     def create(self, request, *args, **kwargs):
+        """Crear un Schedule."""
         serializer = ScheduleSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         schedule = serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualizar un Schedule."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = ScheduleSerializer(instance, data=request.data, partial=partial)
@@ -41,6 +44,7 @@ class ScheduleViewSet(
         return Response(ScheduleSerializer(schedule).data)
 
     def destroy(self, request, *args, **kwargs):
+        """Eliminar un Schedule."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

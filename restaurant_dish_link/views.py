@@ -21,17 +21,21 @@ class RestaurantDishLinkViewSet(mixins.CreateModelMixin,
         'partial_update': [IsAuthenticated, IsAdminUser],
         'destroy': [IsAuthenticated, IsAdminUser]
     }
+    """Enlace restaurante con plato ViewSet"""
 
     def get_permissions(self):
+        """Determinar permisos basados en la acción"""
         return [permission() for permission in self.permission_classes_by_action.get(self.action, [IsAuthenticated])]
 
     def create(self, request, *args, **kwargs):
+        """Crear un nuevo enlace de restaurante con plato"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualizar un enlace de restaurante con plato"""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -40,11 +44,13 @@ class RestaurantDishLinkViewSet(mixins.CreateModelMixin,
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
+        """Obtener detalles de un enlace de restaurante con plato"""
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Eliminar un enlace de restaurante con plato"""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

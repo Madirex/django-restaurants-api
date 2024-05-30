@@ -5,7 +5,9 @@ from django.db.models import JSONField
 from categories.models import Category
 
 class Dish(models.Model):
+    """Modelo de platos."""
     class DishType(models.TextChoices):
+        """Tipo de plato."""
         APPETIZER = 'APPETIZER', 'Appetizer'
         MAIN_COURSE = 'MAIN_COURSE', 'Main Course'
         DESSERT = 'DESSERT', 'Dessert'
@@ -26,8 +28,9 @@ class Dish(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        """Return name, description, price, dish_type, ingredients, calories, image, preparation_time, category"""
+        """Retorna name, description, price, dish_type, ingredients, calories, image, preparation_time, category"""
         return f'{self.name}, {self.description}, {self.price}, {self.dish_type}, {self.ingredients}, {self.calories}, {self.image}, {self.preparation_time}, {self.category}'
 
     def save(self, *args, **kwargs):
+        """Método para guardar."""
         super().save(*args, **kwargs)

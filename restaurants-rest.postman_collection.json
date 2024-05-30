@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Auth",
+			"name": "User & Auth",
 			"item": [
 				{
 					"name": "Login & SignUp",
@@ -314,7 +314,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"address\": {\r\n        \"street\": \"calle test\",\r\n        \"number\": \"32 st\",\r\n        \"city\": \"ciudad de las rosas\",\r\n        \"province\": \"province test\",\r\n        \"country\": \"country test\",\r\n        \"postal_code\": \"2934802\"\r\n    }\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -322,7 +322,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}users/get_order/?order_id=2",
+									"raw": "{{url}}users/get_order/?order_id=10",
 									"host": [
 										"{{url}}users"
 									],
@@ -333,7 +333,7 @@
 									"query": [
 										{
 											"key": "order_id",
-											"value": "2"
+											"value": "10"
 										}
 									]
 								}
@@ -352,7 +352,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"restaurant\": 1,\r\n    \"start_reserve\": \"2025-05-23 9:30:00\",\r\n    \"finish_reserve\": \"2025-05-23 10:00:00\",\r\n    \"table\": 2,\r\n    \"assigned_chairs\": 2,\r\n    /*\"cart_code_code\": \"MadiCode42Asd\",*/\r\n    \"order_lines\": [\r\n        {\r\n            \"dish\": 1,\r\n            \"quantity\": 2\r\n        },\r\n        {\r\n            \"dish\": 1,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}\r\n",
+									"raw": "{\r\n    \"restaurant\": 3,\r\n    \"start_reserve\": \"2025-01-10 2:30:00\",\r\n    \"finish_reserve\": \"2025-01-10 23:00:00\",\r\n    \"tables\": [35, 34],\r\n    \"assigned_chairs\": 3,\r\n    /*\"cart_code_code\": \"MadiCode42Asd\",*/\r\n    \"order_lines\": [\r\n        {\r\n            \"dish\": 1,\r\n            \"quantity\": 2\r\n        },\r\n        {\r\n            \"dish\": 1,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1202,12 +1202,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}tables/1/",
+							"raw": "{{url}}tables/36/",
 							"host": [
 								"{{url}}tables"
 							],
 							"path": [
-								"1",
+								"36",
 								""
 							]
 						}
@@ -1226,7 +1226,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"x_position\": 2,\r\n    \"y_position\": 2,\r\n    \"min_chairs\": 1,\r\n    \"max_chairs\": 2,\r\n    \"assigned_restaurant\": 1,\r\n    \"finish_reserve_at\": \"2024-04-28T11:41:45.470517Z\"\r\n}",
+							"raw": "{\r\n    \"x_position\": 13,\r\n    \"y_position\": 2,\r\n    \"min_chairs\": 1,\r\n    \"max_chairs\": 2,\r\n    \"assigned_restaurant\": 3,\r\n    \"finish_reserve_at\": \"2024-04-28T11:41:45.470517Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1265,12 +1265,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}tables/1/",
+							"raw": "{{url}}tables/4/",
 							"host": [
 								"{{url}}tables"
 							],
 							"path": [
-								"1",
+								"4",
 								""
 							]
 						}
@@ -1371,18 +1371,18 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}restaurants/1/available-tables?day=2025-05-23",
+							"raw": "{{url}}restaurants/3/available-tables?day=2024-05-30",
 							"host": [
 								"{{url}}restaurants"
 							],
 							"path": [
-								"1",
+								"3",
 								"available-tables"
 							],
 							"query": [
 								{
 									"key": "day",
-									"value": "2025-05-23"
+									"value": "2024-05-30"
 								}
 							]
 						}
@@ -1602,7 +1602,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"start_reserve\": \"2024-02-21T9:00:00\",\r\n    \"finish_reserve\": \"2024-02-21T23:00:00\",\r\n    \"assigned_order\": 1,\r\n    \"assigned_chairs\" : 2,\r\n    \"table\": 2\r\n}",
+							"raw": "{\r\n    \"start_reserve\": \"2024-05-30T9:30:00\",\r\n    \"finish_reserve\": \"2024-05-30T10:00:00\",\r\n    \"assigned_order\": 1,\r\n    \"assigned_chairs\" : 2,\r\n    \"table\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

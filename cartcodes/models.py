@@ -3,6 +3,7 @@ from ckeditor.fields import RichTextField
 import uuid
 
 class CartCode(models.Model):
+    """Modelo de códigos de carrito."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     code = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)

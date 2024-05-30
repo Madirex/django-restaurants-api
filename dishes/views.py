@@ -14,8 +14,10 @@ class DishViewSet(mixins.CreateModelMixin,
                   viewsets.GenericViewSet):
     serializer_class = DishModelSerializer
     queryset = Dish.objects.all()
+    """ViewSet para Platos."""
 
     def get_permissions(self):
+        """Asigna permisos basados en la acción."""
         if self.action in ['list', 'retrieve']:
             permission_classes = [IsAuthenticated, IsStandardUser]
         else:
@@ -23,6 +25,7 @@ class DishViewSet(mixins.CreateModelMixin,
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crea un nuevo plato."""
         serializer = DishSerializer(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
         dish = serializer.save()
@@ -30,6 +33,7 @@ class DishViewSet(mixins.CreateModelMixin,
         return Response(data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualiza un plato."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -41,17 +45,21 @@ class DishViewSet(mixins.CreateModelMixin,
         return Response(DishModelSerializer(instance).data)
 
     def retrieve(self, request, *args, **kwargs):
+        """Devuelve un plato."""
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Elimina un plato."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DishImageUpdateAPIView(APIView):
+    """Vista para actualizar la imagen de un plato."""
     def patch(self, request, pk):
+        """Actualiza la imagen de un plato."""
         try:
             dish = Dish.objects.get(pk=pk)
         except Dish.DoesNotExist:

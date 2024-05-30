@@ -7,6 +7,7 @@ from tables.models import Table
 from datetime import timedelta
 
 class Reserve(models.Model):
+    """Modelo para representar una reserva."""
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     start_reserve = models.DateTimeField()
     finish_reserve = models.DateTimeField()
@@ -44,4 +45,5 @@ class Reserve(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """Devuelve la representación en string de la reserva."""
         return f'Reserva de {self.start_reserve} a {self.finish_reserve} en la mesa {self.table.id}, con {self.assigned_chairs} sillas.'

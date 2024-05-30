@@ -15,7 +15,9 @@ from dishes.models import Dish
 from restaurant_dish_link.models import RestaurantDishLink
 
 class RestaurantTests(TestCase):
+    """Tests para el modelo Restaurant."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -138,7 +140,9 @@ class RestaurantTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 class IncorrectRestaurantTests(TestCase):
+    """Tests para el modelo Restaurant con datos incorrectos."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear un usuario administrador
@@ -226,7 +230,9 @@ class IncorrectRestaurantTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 class RestaurantSchedulesTests(TestCase):
+    """Tests para obtener horarios de un restaurante."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear usuario administrador
@@ -306,7 +312,9 @@ class RestaurantSchedulesTests(TestCase):
         self.assertIn("La fecha de inicio no puede ser posterior a la fecha de fin.", response.data["error"])
 
 class RestaurantAvailableTablesTests(TestCase):
+    """Tests para obtener mesas disponibles en un restaurante."""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear usuario administrador
@@ -410,7 +418,9 @@ class RestaurantAvailableTablesTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class RestaurantMenuTests(TestCase):
+    """Tests para obtener el menú de un restaurante"""
     def setUp(self):
+        """Configuración inicial de los tests."""
         self.client = APIClient()
 
         # Crear usuario administrador

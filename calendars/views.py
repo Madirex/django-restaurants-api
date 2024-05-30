@@ -23,6 +23,7 @@ class CalendarViewSet(
     queryset = Calendar.objects.all()
 
     def get_permissions(self):
+        """Asigna permisos basados en la acción."""
         if self.action in ['list', 'retrieve']:
             permission_classes = [IsAuthenticated, IsStandardUser]
         else:
@@ -30,6 +31,7 @@ class CalendarViewSet(
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crea un nuevo calendario."""
         serializer = CalendarSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         calendar = serializer.save()
@@ -37,6 +39,7 @@ class CalendarViewSet(
         return Response(data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualiza un calendario."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = CalendarSerializer(instance, data=request.data, partial=partial)
@@ -45,11 +48,13 @@ class CalendarViewSet(
         return Response(CalendarModelSerializer(instance).data)
 
     def retrieve(self, request, *args, **kwargs):
+        """Devuelve un calendario."""
         instance = self.get_object()
         serializer = CalendarModelSerializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Elimina un calendario."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -57,6 +62,7 @@ class CalendarViewSet(
 
     @action(detail=True, methods=['post'], url_path='add-closed-day')
     def add_closed_day(self, request, pk=None):
+        """Agrega un día de cierre al calendario."""
         calendar = self.get_object()
         closed_day_str = request.data.get('closed_day')
         if not closed_day_str:
@@ -78,6 +84,7 @@ class CalendarViewSet(
 
     @action(detail=True, methods=['delete'], url_path='remove-closed-day')
     def remove_closed_day(self, request, pk=None):
+        """Elimina un día de cierre del calendario."""
         calendar = self.get_object()
         closed_day_str = request.data.get('closed_day')
         if not closed_day_str:

@@ -8,8 +8,9 @@ from utils.validators import validate_address
 from rest_framework.exceptions import ValidationError
 
 class UserMeModelSerializer(serializers.ModelSerializer):
-
+    """Serializador de usuario logueado."""
     class Meta:
+        """Meta options."""
         model = User
         fields = (
             'username',
@@ -22,8 +23,9 @@ class UserMeModelSerializer(serializers.ModelSerializer):
         )
 
 class UserModelSerializer(serializers.ModelSerializer):
-
+    """Serializador para el modelo de usuario."""
     class Meta:
+        """Meta options."""
         model = User
         fields = (
             'username',
@@ -36,10 +38,12 @@ class UserModelSerializer(serializers.ModelSerializer):
         )
 
 class UserLoginSerializer(serializers.Serializer):
+    """Serializador de Login."""
     email = serializers.EmailField()
     password = serializers.CharField(min_length=8, max_length=64)
 
     def validate(self, data):
+        """Validar credenciales."""
         user = authenticate(username=data['email'], password=data['password'])
         if not user:
             raise serializers.ValidationError('Las credenciales no son válidas')
@@ -52,6 +56,7 @@ class UserLoginSerializer(serializers.Serializer):
         return self.context['user'], token.key
 
 class UserSignUpSerializer(serializers.Serializer):
+    """Serializador para registro de usuario."""
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -79,6 +84,7 @@ class UserSignUpSerializer(serializers.Serializer):
     last_name = serializers.CharField(min_length=2, max_length=100)
 
     def validate(self, data):
+        """Validar datos."""
         passwd = data['password']
         passwd_conf = data['password_confirmation']
         if passwd != passwd_conf:
@@ -96,18 +102,22 @@ class UserSignUpSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        """Crear usuario."""
         validated_data.pop('password_confirmation')
         user = User.objects.create_user(**validated_data)
         token, created = Token.objects.get_or_create(user=user)
         return user, token.key
 
 class UserAddressUpdateSerializer(serializers.ModelSerializer):
+    """Serializador para actualizar la dirección de un usuario."""
     address = serializers.JSONField(required=False, allow_null=True)
     class Meta:
+        """Meta options."""
         model = User
         fields = ['address']
 
     def validate_address(self, value):
+        """Validar dirección."""
         if not isinstance(value, dict):
             raise ValidationError("La dirección debe ser un objeto JSON.")
         validate_address(value)

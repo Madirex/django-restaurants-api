@@ -14,6 +14,7 @@ class TableModelSerializer(serializers.ModelSerializer):
     reserves = ReserveSerializer(many=True, read_only=True)
 
     class Meta:
+        """Meta options."""
         model = Table
         fields = (
             'pk',
@@ -37,14 +38,13 @@ class TableSerializer(serializers.Serializer):
     max_chairs = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     assigned_restaurant = serializers.PrimaryKeyRelatedField(queryset=Restaurant.objects.all())
     is_active = serializers.BooleanField(default=True, required=False)
-
+    """Serializer para el modelo de Mesa."""
     def validate(self, data):
-        """Asegurarse de que min_chairs sea menor o igual a max_chairs."""
+        """Asegurarse de que min_chairs sea menor o igual a max_chairs. Asegurarse de que no exista una mesa en la misma posición."""
         if data['min_chairs'] > data['max_chairs']:
             raise serializers.ValidationError(
                 "El mínimo de sillas debe ser menor o igual al máximo de sillas."
             )
-        """Asegurarse de que no exista una mesa en la misma posición."""
         # Validación para posiciones únicas
         x_pos = data['x_position']
         y_pos = data['y_position']
@@ -62,9 +62,11 @@ class TableSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        """Crear una nueva mesa."""
         return Table.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        """Actualizar una mesa."""
         for key, value in validated_data.items():
             setattr(instance, key, value)
         instance.save()

@@ -6,6 +6,7 @@ from users.models import User
 from cartcodes.models import CartCode
 
 class OrderStatus(models.TextChoices):
+    """Clase para representar los estados de un pedido."""
     PENDING = 'pending', 'Pendiente'
     CONFIRMED = 'confirmed', 'Confirmada'
     CANCELLED = 'cancelled', 'Cancelada'
@@ -29,5 +30,6 @@ class Order(models.Model):
     finished_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
+        """Devuelve la representación en string del pedido."""
         return f"Order {self.pk} - {self.status}"
 

@@ -13,8 +13,10 @@ class CategoryViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     serializer_class = CategoryModelSerializer
     queryset = Category.objects.all()
+    """ViewSet para Categorías."""
 
     def get_permissions(self):
+        """Asigna permisos basados en la acción."""
         if self.action in ['list', 'retrieve']:
             permission_classes = []
         else:
@@ -22,6 +24,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """Crea una nueva categoría."""
         serializer = CategorySerializer(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
         exp = serializer.save()
@@ -29,6 +32,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
         return Response(data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
+        """Actualiza una categoría."""
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -37,11 +41,13 @@ class CategoryViewSet(mixins.CreateModelMixin,
         return Response(CategoryModelSerializer(instance).data)
 
     def retrieve(self, request, *args, **kwargs):
+        """Devuelve una categoría."""
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """Elimina una categoría."""
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
