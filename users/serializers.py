@@ -4,23 +4,46 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from users.models import User
+from utils.validators import validate_address
+from rest_framework.exceptions import ValidationError
 
-class UserModelSerializer(serializers.ModelSerializer):
-
+class UserMeModelSerializer(serializers.ModelSerializer):
+    """Serializador de usuario logueado."""
     class Meta:
+        """Meta options."""
         model = User
         fields = (
             'username',
             'first_name',
             'last_name',
             'email',
+            'address',
+            'phone',
+            'photo'
+        )
+
+class UserModelSerializer(serializers.ModelSerializer):
+    """Serializador para el modelo de usuario."""
+    class Meta:
+        """Meta options."""
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'phone',
+            'photo',
+            'is_admin'
         )
 
 class UserLoginSerializer(serializers.Serializer):
+    """Serializador de Login."""
     email = serializers.EmailField()
     password = serializers.CharField(min_length=8, max_length=64)
 
     def validate(self, data):
+        """Validar credenciales."""
         user = authenticate(username=data['email'], password=data['password'])
         if not user:
             raise serializers.ValidationError('Las credenciales no son válidas')
@@ -33,6 +56,7 @@ class UserLoginSerializer(serializers.Serializer):
         return self.context['user'], token.key
 
 class UserSignUpSerializer(serializers.Serializer):
+    """Serializador para registro de usuario."""
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -47,12 +71,6 @@ class UserSignUpSerializer(serializers.Serializer):
         required=False
     )
 
-    extract = serializers.CharField(max_length=1000, required=False)
-
-    city = serializers.CharField(max_length=250, required=False)
-
-    country = serializers.CharField(max_length=250, required=False)
-
     phone_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
         message="Debes introducir un número con el siguiente formato: +999999999. El límite son de 15 dígitos."
@@ -66,23 +84,41 @@ class UserSignUpSerializer(serializers.Serializer):
     last_name = serializers.CharField(min_length=2, max_length=100)
 
     def validate(self, data):
-            passwd = data['password']
-            passwd_conf = data['password_confirmation']
-            if passwd != passwd_conf:
-                raise serializers.ValidationError("Las contraseñas no coinciden")
-            password_validation.validate_password(passwd)
+        """Validar datos."""
+        passwd = data['password']
+        passwd_conf = data['password_confirmation']
+        if passwd != passwd_conf:
+            raise serializers.ValidationError("Las contraseñas no coinciden")
+        password_validation.validate_password(passwd)
 
-            image = None
-            if 'photo' in data:
-                image = data['photo']
+        image = None
+        if 'photo' in data:
+            image = data['photo']
 
-            if image:
-                if image.size > (512 * 1024):
-                    raise serializers.ValidationError(f"La imagen es demasiado grande, el peso máximo permitido es de 512KB y el tamaño enviado es de {round(image.size / 1024)}KB")
+        if image:
+            if image.size > (512 * 1024):
+                raise serializers.ValidationError(f"La imagen es demasiado grande, el peso máximo permitido es de 512KB y el tamaño enviado es de {round(image.size / 1024)}KB")
 
-            return data
+        return data
 
-    def create(self, data):
-        data.pop('password_confirmation')
-        user = User.objects.create_user(**data)
-        return user
+    def create(self, validated_data):
+        """Crear usuario."""
+        validated_data.pop('password_confirmation')
+        user = User.objects.create_user(**validated_data)
+        token, created = Token.objects.get_or_create(user=user)
+        return user, token.key
+
+class UserAddressUpdateSerializer(serializers.ModelSerializer):
+    """Serializador para actualizar la dirección de un usuario."""
+    address = serializers.JSONField(required=False, allow_null=True)
+    class Meta:
+        """Meta options."""
+        model = User
+        fields = ['address']
+
+    def validate_address(self, value):
+        """Validar dirección."""
+        if not isinstance(value, dict):
+            raise ValidationError("La dirección debe ser un objeto JSON.")
+        validate_address(value)
+        return value

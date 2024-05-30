@@ -4,16 +4,17 @@ services:
   db:
     image: postgres
     env_file:
-      - ./.envs/.postgres
+      - ./.envs/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver_plus 0.0.0.0:8000 --cert-file /cert/server.crt --key-file /cert/server.key
     env_file:
-      - ./.envs/.postgres
+      - ./.envs/.env
     volumes:
       - .:/code
+      - ./cert:/cert
     ports:
       - "8000:8000"
     depends_on:
