@@ -42,22 +42,24 @@ class TableSerializer(serializers.Serializer):
     def validate(self, data):
         """Asegurarse de que min_chairs sea menor o igual a max_chairs. Asegurarse de que no exista una mesa en la misma posición."""
         if data['min_chairs'] > data['max_chairs']:
-            raise serializers.ValidationError(
-                "El mínimo de sillas debe ser menor o igual al máximo de sillas."
-            )
+           raise serializers.ValidationError(
+               "El mínimo de sillas debe ser menor o igual al máximo de sillas."
+           )
         # Validación para posiciones únicas
-        x_pos = data['x_position']
-        y_pos = data['y_position']
+        x_pos = data.get('x_position')
+        y_pos = data.get('y_position')
+        assigned_restaurant = data.get('assigned_restaurant')
 
-        # Verificar si ya existe una mesa con las mismas coordenadas
-        table_exists = Table.objects.filter(x_position=x_pos, y_position=y_pos)
+        if x_pos is not None and y_pos is not None and assigned_restaurant is not None:
+           # Verificar si ya existe una mesa con las mismas coordenadas en el mismo restaurante
+           table_exists = Table.objects.filter(x_position=x_pos, y_position=y_pos, assigned_restaurant=assigned_restaurant)
 
-        # Si es una actualización, debemos excluir el propio objeto de la verificación de unicidad
-        if self.instance:
-            table_exists = table_exists.exclude(pk=self.instance.pk)
+           # Si es una actualización, debemos excluir el propio objeto de la verificación de unicidad
+           if self.instance:
+               table_exists = table_exists.exclude(pk=self.instance.pk)
 
-        if table_exists.exists():
-            raise serializers.ValidationError("Una mesa con esta posición ya existe.")
+           if table_exists.exists():
+               raise serializers.ValidationError("Una mesa con esta posición ya existe.")
 
         return data
 
