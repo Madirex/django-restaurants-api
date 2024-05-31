@@ -4,4 +4,5 @@
 *.pot
 *.pyc
 .envs
-media/
+media/users
+media/dishes
