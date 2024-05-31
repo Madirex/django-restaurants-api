@@ -18,7 +18,7 @@ class Table(models.Model):
 
     class Meta:
         """Meta options."""
-        unique_together = ('x_position', 'y_position')
+        unique_together = ('x_position', 'y_position', 'assigned_restaurant')
 
     def __str__(self):
         """Return basic info about the table"""
