@@ -2,6 +2,8 @@
 
 Este proyecto es una API desarrollada en Django para gestionar la información de restaurantes, menús, reservas, pedidos y más.
 
+[Ir al proyecto del frontend (desarrollado en Vue 3)](https://github.com/Madirex/vue_restaurants_front/)
+
 ## Comandos
 
 #### Para ejecutar los tests
