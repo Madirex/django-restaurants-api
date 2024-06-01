@@ -1,4 +1,4 @@
-# Proyecto Restaurante
+# django-restaurants-api
 
 Este proyecto es una API desarrollada en Django para gestionar la información de restaurantes, menús, reservas, pedidos y más.
 
