@@ -10,7 +10,7 @@ from cartcodes.models import CartCode
 from decimal import Decimal
 
 class OrderTests(TestCase):
-   """Tests para el modelo Order."""
+    """Tests para el modelo Order."""
     def setUp(self):
         """Configuración inicial de los tests."""
         self.client = APIClient()
