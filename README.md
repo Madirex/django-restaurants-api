@@ -1,6 +1,21 @@
-# Proyecto Restaurante
+# django-restaurants-api
 
 Este proyecto es una API desarrollada en Django para gestionar la información de restaurantes, menús, reservas, pedidos y más.
+
+[Ir al proyecto del frontend (desarrollado en Vue 3)](https://github.com/Madirex/vue-restaurants-front/)
+
+## ✏️ Instalación previa (requisitos)
+Es importante crear una carpeta .envs y dentro un archivo .env con el siguiente contenido:
+
+    POSTGRES_DB=restaurants
+    POSTGRES_USER=madi
+    POSTGRES_PASSWORD=#T\MzF]qe:z4#tt#
+    POSTGRES_HOST=db
+    POSTGRES_PORT=5432
+
+Se deberá reemplazar los valores de POSTGRES_USER y POSTGRES_PASSWORD por los valores deseados.
+
+Además, se deberá de tener Docker instalado y en ejecución.
 
 ## Comandos
 
